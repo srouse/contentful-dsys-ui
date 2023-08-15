@@ -1,0 +1,15 @@
+{
+    "component": {
+      "button": {
+        "background" : {
+            "value": "{color.charcoal}"
+        },
+        "padding" : {
+            "value": "{size.2}"
+        },
+        "cornerRadius" : {
+            "value": "{size.1}"
+        }
+      }
+    }
+  }

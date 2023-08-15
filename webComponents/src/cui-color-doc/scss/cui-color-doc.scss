@@ -1,0 +1,46 @@
+@use 'variables' as vars;
+
+:host {
+    display: inline-block;
+    width: auto;
+    font-family: sans-serif;
+    background-color: vars.$cui-color-white;
+    padding: vars.$cui-size-2;
+}
+
+
+    // .table {
+        
+    // }
+        .row {
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: row;
+
+            &:first-child {
+                border-top: 1px solid #ccc;
+            }
+        }
+            .cell {
+                padding: var( --cui-size-1);
+                border-right: 1px solid #ccc;
+                display: flex;
+                justify-content: start;
+                align-items: center;
+
+                &:first-child {
+                    border-left: 1px solid #ccc;
+                }
+
+                &.name {
+                    width: 80px;
+                }
+
+                &.chip > div {
+                    width: 24px;
+                    height: 24px;
+                }
+                &.css {
+                    width: 200px;
+                }
+            }

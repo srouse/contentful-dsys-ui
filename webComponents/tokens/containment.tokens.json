@@ -1,0 +1,77 @@
+{
+    "background": {
+        "@" : {
+            "value": "{color.white}",
+            "type": "color",
+            "description": ""
+        },
+        "gray" : {
+            "@" : {
+                "value": "{color.gray.04}",
+                "type": "color",
+                "description": ""
+            },
+            "dark" : {
+                "value": "{color.charcoal}",
+                "type": "color",
+                "description": ""
+            }
+        } ,
+        "khaki" : {
+            "value": "{color.khaki.09}",
+            "type": "color",
+            "description": ""
+        },
+        "merna" : {
+            "03" : {
+                "value": "{color.merna.03}",
+                "type": "color",
+                "description": ""
+            },
+            "dark" : {
+                "value": "{color.merna.01}",
+                "type": "color",
+                "description": ""
+            }
+        }
+    },
+    "text" : {
+       "@" : {
+            "value": "{color.charcoal}",
+            "type": "color",
+            "description": "" 
+        },
+        "light" : {
+            "value": "{color.gray.01}",
+            "type": "color",
+            "description": "" 
+        },
+        "inverse" : {
+            "value": "{color.white}",
+            "type": "color",
+            "description": "" 
+        }
+    },
+    "border" : {
+       "@" : {
+            "value": "{color.gray.01}",
+            "type": "color",
+            "description": "" 
+        },
+        "light" : {
+            "value": "{color.gray.03}",
+            "type": "color",
+            "description": "" 
+        },
+        "error" : {
+            "value": "{color.merna.02}",
+            "type": "color",
+            "description": "" 
+        },
+        "inverse" : {
+            "value": "{color.white}",
+            "type": "color",
+            "description": "" 
+        }
+    }
+}

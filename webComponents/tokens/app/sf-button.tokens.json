@@ -1,0 +1,15 @@
+{
+    "component": {
+      "button": {
+        "background" : {
+            "value": "{color.merna.01}"
+        },
+        "padding" : {
+            "value": "{size.4}"
+        },
+        "cornerRadius" : {
+            "value": "{size.1}"
+        }
+      }
+    }
+  }

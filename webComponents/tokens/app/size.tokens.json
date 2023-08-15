@@ -1,0 +1,31 @@
+{
+  "size": {
+    "1" : {
+      "value": 6,
+      "type": "size",
+      "description": ""
+    },
+    "2" : {
+      "value": 12,
+      "type": "dimension",
+      "description": ""
+    },
+    "3" : {
+      "value": 18,
+      "type": "dimension",
+      "description": ""
+    },
+    "4" : {
+      "value": 24,
+      "type": "dimension",
+      "description": ""
+    }
+  },
+  "color": {
+    "charcoal" : {
+      "value": "#403c3c",
+      "type": "color",
+      "description": ""
+    }
+  }
+}

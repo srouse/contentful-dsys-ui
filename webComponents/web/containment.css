@@ -1,0 +1,91 @@
+/* BACKGROUNDS */
+.-oneX,
+.-oneX-background,
+.-oneX-background-khaki,
+.-oneX-background-gray,
+.-oneX-background-merna-03,
+.-oneX-background-merna-dark,
+.-oneX-background-gray-dark {
+    background-color: var(
+        --onex-background-applied,
+        var( --onex-background )
+    );
+    color: var(
+        --onex-text-applied,
+        var( --onex-text )
+    );
+}
+
+/* LIGHT */
+.-oneX-background,
+.-oneX-background-khaki,
+.-oneX-background-gray {
+    --onex-text-applied: var( --onex-text );
+    --onex-text-light-applied: var( --onex-text );
+    --onex-border-applied: var( --onex-border );
+    --onex-border-light-applied: var( --onex-border-light );
+}
+
+.-oneX-background {
+    --onex-background-applied: var( --onex-background );
+}
+
+.-oneX-background-khaki {
+    --onex-background-applied: var( --onex-background-khaki );
+}
+
+.-oneX-background-gray {
+    --onex-background-applied: var( --onex-background-gray );
+}
+
+/* DARK */
+.-oneX-background-merna-03,
+.-oneX-background-merna-dark,
+.-oneX-background-gray-dark {
+    --onex-text-applied: var( --onex-text-inverse );
+    --onex-text-light-applied: var( --onex-text-inverse );
+    --onex-border-applied: var( --onex-border-inverse );
+    --onex-border-light-applied: var( --onex-border-light-inverse );
+}
+
+.-oneX-background-merna-03 {
+    --onex-background-applied: var( --onex-background-merna-03 );
+}
+
+.-oneX-background-merna-dark {
+    --onex-background-applied: var( --onex-background-merna-dark );
+}
+
+.-oneX-background-gray-dark {
+    --onex-background-applied: var( --onex-background-gray-dark );
+}
+
+/* FOREGROUNDS */
+.-oneX-text {
+    color: var(
+        --onex-text-applied,
+        var( --onex-text )
+    );
+}
+
+.-oneX-text-light {
+    color: var(
+        --onex-text-light-applied,
+        var( --onex-text-light )
+    );
+}
+
+.-oneX-border {
+    border: 1px solid var(
+        --onex-border-applied,
+        var( --onex-border )
+    );
+}
+
+.-oneX-border-light {
+    border: 1px solid var(
+        --onex-border-light-applied,
+        var( --onex-border-light )
+    );
+}
+
