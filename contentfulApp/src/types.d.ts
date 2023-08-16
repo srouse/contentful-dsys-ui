@@ -32,6 +32,7 @@ export type WebComponentMember = {
   attribute: string,
   reflects: boolean,
   value?: string,
+  description?: string,
 }
 
 export type MemberInput = {
@@ -40,4 +41,5 @@ export type MemberInput = {
   selectItems?: string[],
   attribute: string,
   value?: string,
+  description?: string,
 }

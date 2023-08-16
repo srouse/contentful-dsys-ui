@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cd ./webComponents && npm install && npm run build && cd ../contentfulApp && npm install && npm run build"
+    "build": "cd ./webComponents && npm install && npm run build && cd ../contentfulApp && npm install && npm run build",
+    "build:dsys": "cd ./webComponents && npm run build",
+    "start": "cd ./contentfulApp && npm run start"
   },
   "author": "",
   "license": "ISC"

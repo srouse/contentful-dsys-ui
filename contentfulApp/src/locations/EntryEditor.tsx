@@ -36,7 +36,6 @@ const EntryEditor = () => {
       if (cmaEntry.fields.configuration) {
         configWebComp = cmaEntry.fields.configuration['en-US'] as WebComponent;
       }
-      console.log('cmaEntry', cmaEntry);
       if (cmaEntry.fields.references) {
         const refs = await Promise.all(cmaEntry.fields.references['en-US'].map((reference: any) => {
           return getPreviewEntry(
@@ -67,13 +66,16 @@ const EntryEditor = () => {
 
         if (configWebComp && firstDeclaration.name === configWebComp.name) {
           newWebCompLookup[configWebComp.tagName] = configWebComp;
-          const newWebComp = {...firstDeclaration};
-          configWebComp.members.map((member, index) => {
+          const newWebComp = JSON.parse(JSON.stringify(firstDeclaration));
+          newWebComp.members.map((member: any, index: number) => {
             const configMember = configWebComp?.members.find(
               configMember => configMember.name === member.name
             );
             if (configMember) {
-              newWebComp.members[index] = configMember;
+              newWebComp.members[index] = {
+                ...member,
+                value: configMember.value,
+              };
             }
             return true;
           });
@@ -105,7 +107,6 @@ const EntryEditor = () => {
     const attr: string[] = [];
     webComponent.members.map(member => {
       const input = memberToInput(member);
-      console.log('input', input);
       if (input.type === 'reference') {
         attr.push(`${input.attribute}="{&quot;id&quot;:&quot;${input.value}&quot;}"`);
       }else{
@@ -216,6 +217,7 @@ const EntryEditor = () => {
                     key={`name_${member.name}`}
                     label={member.name}
                     defaultValue={member.value}
+                    helperText={member.description}
                     onBlur={async () => {
                       saveWebComponentConfig(cma, sdk, webComponent, webCompHtml, setIsSaving);
                     }}
@@ -234,6 +236,7 @@ const EntryEditor = () => {
                     select
                     label={input.attribute}
                     value={input.value}
+                    helperText={member.description}
                     onChange={(evt) => {
                       const newWebComp = {...webComponent};
                       const thisMember = newWebComp.members[index];
@@ -257,6 +260,7 @@ const EntryEditor = () => {
                     select
                     label={input.attribute}
                     value={input.value}
+                    helperText={member.description}
                     onChange={(evt) => {
                       const newWebComp = {...webComponent};
                       const thisMember = newWebComp.members[index];

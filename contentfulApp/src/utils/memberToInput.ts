@@ -7,7 +7,8 @@ export default function memberToInput(
   const input: MemberInput = {
     type: 'string',
     attribute: member.attribute,
-    value: member.value || member.default?.replace(/'/g, '')
+    value: member.value || member.default?.replace(/'/g, ''),
+    description: member.description
   };
   if (member.type.text === 'string') {
     input.type = 'string';

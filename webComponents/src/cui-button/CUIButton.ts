@@ -11,28 +11,23 @@ export default class CUIButton extends LitElement {
   @property({type: String, reflect: true})
     label = 'Submit';
 
+    /** The design style of the button */
   @property({type: String, reflect: true})
     design: 'solid' | 'outline' | 'none' = 'solid';
 
+  /** Contentful Reference to a URL Entry */
   @property({type: Object})
     url: IUrl;
 
-  // @property({type: String, reflect: true})
-  //   sublabel = '';
-
-  /** Constructor */
   constructor() {
     super();
   }
-
-  /* <div class="sublabel">${this.sublabel}</div> */
 
   /**
    * render
    * @return {object}
    */
   render(): object {
-    console.log('this.url', this.url);
     return html`
       <div class="btn ${this.design}">
         ${this.label}
@@ -41,3 +36,4 @@ export default class CUIButton extends LitElement {
     `;
   }
 }
+

@@ -39,8 +39,13 @@ export default class CUIColorDoc extends LitElement {
 
   static styles = styles;
 
+  /** test */
   @property({type: String, reflect: true})
     title = 'Colors';
+
+    /** The cluster of tokens to display */
+  @property({type: String, reflect: true})
+    colors: 'primary' | 'secondary' | 'accent' | 'all' = 'all';
 
   /** Constructor */
   constructor() {
