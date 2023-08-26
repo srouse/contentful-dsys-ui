@@ -6,14 +6,13 @@
     "dist"
   ],
   "scripts": {
-    "start": "cross-env BROWSER=none react-scripts start",
-    "build": "react-scripts build",
+    "start": "BUILD_PATH='../build/_ctflapp' cross-env BROWSER=none react-scripts start",
+    "build": "BUILD_PATH='../build/_ctflapp' react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "create-app-definition": "contentful-app-scripts create-app-definition",
     "upload": "contentful-app-scripts upload --bundle-dir ./build",
-    "upload-ci": "contentful-app-scripts upload --ci --bundle-dir ./build --organization-id $CONTENTFUL_ORG_ID --definition-id $CONTENTFUL_APP_DEF_ID --token $CONTENTFUL_ACCESS_TOKEN",
-    "autolink": "cd ../webComponents && yarn link && cd ../contentfulApp && yarn link contentful-auto-ui"
+    "upload-ci": "contentful-app-scripts upload --ci --bundle-dir ./build --organization-id $CONTENTFUL_ORG_ID --definition-id $CONTENTFUL_APP_DEF_ID --token $CONTENTFUL_ACCESS_TOKEN"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -41,7 +40,7 @@
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.4",
     "contentful": "^9.2.9",
-    "contentful-auto-ui": "file:../webComponents",
+    "contentful-auto-ui": "file:../build/_webcomps",
     "contentful-management": "10.39.2",
     "emotion": "10.0.27",
     "react": "18.2.0",

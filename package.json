@@ -3,11 +3,22 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build": "cd ./webComponents && npm install && npm run build && cd ../contentfulApp && npm install && npm run build",
+    "build": "cd ./webComponents && npm install && npm run build && cd ../contentfulApp && npm install && npm run build && cd ../ssg && npm install && cd ../ && npm run build:ssg",
     "build:dsys": "cd ./webComponents && npm run build",
-    "start": "cd ./contentfulApp && npm run start"
+    "build:ssg": "node ./scripts/ssg.mjs",
+    "start": "cd ./contentfulApp && npm run start",
+    "server": "http-server ./build -c-1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "chalk": "^5.3.0",
+    "ctfl-dsys-ssg": "file:./ssg/dist",
+    "esbuild": "^0.19.2",
+    "fs-extra": "^11.1.1",
+    "glob-promise": "^6.0.3",
+    "typescript": "^5.2.2"
+  }
 }

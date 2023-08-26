@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-// import { Paragraph } from '@contentful/f36-components';
 import { EditorAppSDK } from '@contentful/app-sdk';
 import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
 import { Button, MenuItem, Stack, TextField } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-// import tokens from 'contentful-auto-ui/dist/app/typescript/tokens';
-import webComps from 'contentful-auto-ui/dist/web-comps/custom-elements.json';
+import webComps from 'contentful-auto-ui/web-comps/custom-elements.json';
 import { WebComponent } from '../types';
 import memberToInput from '../utils/memberToInput';
 import saveWebComponentConfig from '../utils/saveWebComponentConfig';

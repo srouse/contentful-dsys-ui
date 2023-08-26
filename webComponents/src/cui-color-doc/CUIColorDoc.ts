@@ -1,6 +1,6 @@
 import {LitElement, TemplateResult, html} from 'lit';
 import {property} from 'lit/decorators.js';
-import tokens from '../../dist/web/typescript/tokens';
+import tokens from 'webcomps/web/typescript/tokens';
 import styles from './scss/cui-color-doc.scss';
 
 const processColors = (
