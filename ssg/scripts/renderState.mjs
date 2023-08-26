@@ -25,7 +25,11 @@ export default function renderState(state) {
 async function createWebCompHtml(finalFolder, entry, state) {
   await fs.mkdir(finalFolder, { recursive: true });
   const config = entry.fields.configuration;
-  const html = `<${
+  const html = `
+  <script src="/_webcomps/web-comps/cui-button/cui-button.js" type="module"></script>
+  <script src="/_webcomps/web-comps/cui-color-doc/cui-color-doc.js" type="module"></script>
+  <link href="/_webcomps/web/css/_variables.css" rel="stylesheet"></link>
+  <${
     config.tagName
   } ${config.members.map(member => {
     if (
