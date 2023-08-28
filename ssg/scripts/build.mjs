@@ -1,20 +1,28 @@
 import { processContentfulResults } from "./processContentfulResults.mjs";
 import renderState from "./renderState.mjs";
 import State from "./state.mjs";
+import {promises as fs} from 'fs';
 
 const CONTENTFUL_INCLUDE = 0;// 10;
 const MAX_LOADED = 1000;
 
 export async function build (
-  tags, distFolder
+  config
+  /*
+    tags,
+    destination,
+    webCompJsPath,
+    renderWebComp,
+    renderHtml
+  */
 ) {
   const state = new State();
   if (!state.client) return;
-  state.distFolder = distFolder;
+  state.config = config;
   state.context.totalCalls++;
   const results = await state.client.getEntries({ 
     'content_type': 'webComponent',
-    ['metadata.tags.sys.id[all]']: tags, 
+    ['metadata.tags.sys.id[all]']: config.tags, 
     'include': CONTENTFUL_INCLUDE
   }).catch(console.error);
 
@@ -22,8 +30,12 @@ export async function build (
   await loadEntriesToLoad(state);
 
   // good to go, render
-  const renderResults = await renderState(state);
-  console.log('renderResults', renderResults);
+  await renderState(state);
+  
+  await fs.writeFile(
+    `${state.config.destination}/state.json`,
+    JSON.stringify(state, null, 2)
+  );
   console.log(state.generateSummary())
 }
 

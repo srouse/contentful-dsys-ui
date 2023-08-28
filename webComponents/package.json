@@ -28,7 +28,7 @@
   "dependencies": {
     "@custom-elements-manifest/analyzer": "^0.8.4",
     "@divriots/style-dictionary-to-figma": "^0.4.0",
-    "contentful": "^10.4.2",
+    "contentful": "^9.3.5",
     "contentful-management": "^10.39.2",
     "contentful-typescript-codegen": "^3.4.0",
     "dotenv": "^16.3.1",

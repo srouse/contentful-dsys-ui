@@ -1,11 +1,10 @@
 import getClient from "./client.mjs";
 import padNumber from "./paddNumber.mjs";
 
-
-
 export default class State {
 
   entries = {};
+  webComponents = {};
   entriesToLoad = [];
   assetsToLoad = [];
 
@@ -19,6 +18,15 @@ export default class State {
   };
 
   client = getClient();
+
+  config;// passed via build
+  /*
+    tags,
+    destination,
+    webCompJsPath,
+    renderWebComp,
+    renderHtml
+  */
 
   getEntry(identifier) {
     if (!identifier ) return undefined;
@@ -47,6 +55,13 @@ export default class State {
     this.context.totalEntries++;
     this.entries[sysId] = entry;
 
+    if (entry.sys.contentType.sys.id === 'webComponent') {
+      const config = entry.fields.configuration;
+      if (!this.webComponents[config.name]) {
+        this.webComponents[config.name] = [];
+      }
+      this.webComponents[config.name].push(entry);
+    }
 
     // look for child entries 
     if (entry.fields) {

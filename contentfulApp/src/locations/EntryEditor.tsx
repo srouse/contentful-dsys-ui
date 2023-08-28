@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { EditorAppSDK } from '@contentful/app-sdk';
 import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
-import { Button, MenuItem, Stack, TextField } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import webComps from 'contentful-auto-ui/web-comps/custom-elements.json';
 import { WebComponent } from '../types';
 import memberToInput from '../utils/memberToInput';
 import saveWebComponentConfig from '../utils/saveWebComponentConfig';
 import SyncIcon from '@mui/icons-material/Sync';
-import { getPreviewEntry } from '../utils/contentfulClient';
-import { Entry } from 'contentful';
+import { Entry } from 'contentful-management';
+import { Entry as EntryCPA } from 'contentful';
+import { Button, Stack } from '@contentful/f36-components';
+import tokens from '@contentful/f36-tokens';
+import RenderWebComp from './entryEditor/RenderWebComp';
+import loadContentfulRefs from '../utils/loadContentfulRefs';
 
 const EntryEditor = () => {
   const sdk = useSDK<EditorAppSDK>();
@@ -21,12 +24,12 @@ const EntryEditor = () => {
   const [webComponent, setWebComponent] = useState<WebComponent | undefined>();
   const [webCompHtml, setWebCompHtml] = useState<string>('');
   const [webComponentEntry, setWebComponentEntry] = useState<any>('');
-  const [webComponentRefs, setWebComponentRefs] = useState<Entry<any>[]>([]);
+  const [webComponentRefs, setWebComponentRefs] = useState<Entry[]>([]);
+  const [webComponentCPARefs, setWebComponentCPARefs] = useState<EntryCPA<unknown>[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
-      console.log('INIT');
       const cmaEntry = await cma.entry.get({
         entryId: sdk.entry.getSys().id,
       });
@@ -34,17 +37,10 @@ const EntryEditor = () => {
       if (cmaEntry.fields.configuration) {
         configWebComp = cmaEntry.fields.configuration['en-US'] as WebComponent;
       }
-      if (cmaEntry.fields.references) {
-        const refs = await Promise.all(cmaEntry.fields.references['en-US'].map((reference: any) => {
-          return getPreviewEntry(
-            cmaEntry.sys.space.sys.id,
-            cmaEntry.sys.environment.sys.id,
-            sdk.parameters.installation.contentfulPreviewAccessKey,
-            reference.sys.id
-          );
-        }));
-        setWebComponentRefs(refs);
-      }
+      await loadContentfulRefs(
+        cmaEntry, sdk, cma,
+        setWebComponentCPARefs, setWebComponentRefs
+      );
       setWebComponentEntry(cmaEntry);
 
       // gather comps
@@ -77,7 +73,7 @@ const EntryEditor = () => {
             }
             return true;
           });
-          setWebComponent(newWebComp); // configWebComp);
+          setWebComponent(newWebComp);
           setWebComponentTagName(configWebComp.tagName);
         }else{
           firstDeclaration.members.map((member) => {
@@ -94,9 +90,9 @@ const EntryEditor = () => {
       setWebCompLookup(newWebCompLookup);
       setAllWebComps(newAllWebComps);
     })();
-    
   }, [cma, sdk]);
   
+  // WEB COMP HTML
   useEffect(() => {
     if (!webComponent) {
       setWebCompHtml('');
@@ -106,7 +102,10 @@ const EntryEditor = () => {
     webComponent.members.map(member => {
       const input = memberToInput(member);
       if (input.type === 'reference') {
-        attr.push(`${input.attribute}="{&quot;id&quot;:&quot;${input.value}&quot;}"`);
+        const inputRef = webComponentCPARefs.find(ref => ref.sys.id === input.value);
+        if (inputRef) {
+          attr.push(`${input.attribute}="${JSON.stringify(inputRef).replace(/"/g, '&quot;')}"`);
+        }
       }else{
         attr.push(`${input.attribute}="${input.value}"`);
       }
@@ -119,7 +118,7 @@ const EntryEditor = () => {
         }></${webComponent?.tagName}>`;
 
     setWebCompHtml(output);
-  }, [webComponent, setWebCompHtml, setIsSaving, cma, sdk]);
+  }, [webComponent, setWebCompHtml, setIsSaving, cma, sdk, webComponentCPARefs]);
 
   if (!webComponent) {
     return (
@@ -144,183 +143,93 @@ const EntryEditor = () => {
   }
 
   return (
-    <Grid container
-      alignItems="stretch" height="100vh">
-      <Grid
-        sx={{
-          overflowY: 'auto',
-          height: `100%`,
-          width: 380
-        }}>
-        <Stack p={4} pt={4} gap={3}>
-          {webComponentEntry ? (
-            <TextField 
-              label="Title"
-              value={webComponentEntry.fields?.title ? 
-                webComponentEntry.fields?.title['en-US'] : ""}
-              onChange={async (evt) => {
-                const newCmaEntry = {...webComponentEntry};
-                newCmaEntry.fields.title = {'en-US': evt.target.value};
-                setWebComponentEntry(newCmaEntry);
-              }}
-              onBlur={async (evt) => {
-                const newCmaEntry = {...webComponentEntry};
-                newCmaEntry.fields.title = {'en-US': evt.target.value};
-                setWebComponentEntry(newCmaEntry);
-
-                setIsSaving(true);
-                const cmaEntry = await cma.entry.get({
-                  entryId: sdk.entry.getSys().id,
-                });
-                cmaEntry.fields.title = {'en-US': evt.target.value};
-                await cma.entry.update({
-                  entryId: sdk.entry.getSys().id
-                }, cmaEntry);
-                setIsSaving(false);
-              }}
-            />
-          ) : ""}
-          {/* <div>{tokens.cui.color.charcoal}</div> */}
-          <TextField 
-            select
-            label="Component"
-            value={webComponentTagName}
-            onChange={(event) => {
-              const newWebComp = webCompLookup[event.target.value];
-              setWebComponentTagName(event.target.value);
-              if (newWebComp) {
-                setWebComponent({...newWebComp});
-              }else{
-                setWebComponent(undefined);
-              }
-              saveWebComponentConfig(cma, sdk, newWebComp, webCompHtml, setIsSaving);
-            }}>
-            <MenuItem value={'none'}>
-              No Web Component Selected
-            </MenuItem>
-            {allWebComps.map(webComp => {
-              return (
-                <MenuItem key={webComp.value} value={webComp.value}>
-                  {webComp.name}
-                </MenuItem>
-              );
-            })}
-          </TextField>
-          {webComponent ? 
-            (webComponent.members.map((member, index) => {
-              const input = memberToInput(member);
-              if (input.type === 'string') {
-                return (
-                  <TextField 
-                    key={`name_${member.name}`}
-                    label={member.name}
-                    defaultValue={member.value}
-                    helperText={member.description}
-                    onBlur={async () => {
-                      saveWebComponentConfig(cma, sdk, webComponent, webCompHtml, setIsSaving);
-                    }}
-                    onChange={(evt) => {
-                      const newWebComp = {...webComponent};
-                      const thisMember = newWebComp.members[index];
-                      thisMember.value = evt.target.value;
-                      setWebComponent(newWebComp);
-                    }}
-                  />
-                );
-              }else if (input.type === 'select') {
-                return (
-                  <TextField 
-                    key={`name_${member.name}`}
-                    select
-                    label={input.attribute}
-                    value={input.value}
-                    helperText={member.description}
-                    onChange={(evt) => {
-                      const newWebComp = {...webComponent};
-                      const thisMember = newWebComp.members[index];
-                      thisMember.value = evt.target.value;
-                      setWebComponent(newWebComp);
-                      saveWebComponentConfig(cma, sdk, newWebComp, webCompHtml, setIsSaving);
-                    }}>
-                    {input.selectItems?.map(item => {
-                      return (
-                        <MenuItem key={item} value={item}>
-                          {item}
-                        </MenuItem>
-                      );
-                    })}
-                  </TextField>
-                );
-              }else if (input.type === 'reference' && webComponentRefs) {
-                return (
-                  <TextField 
-                    key={`name_${member.name}`}
-                    select
-                    label={input.attribute}
-                    value={input.value}
-                    helperText={member.description}
-                    onChange={(evt) => {
-                      const newWebComp = {...webComponent};
-                      const thisMember = newWebComp.members[index];
-                      thisMember.value = evt.target.value;
-                      setWebComponent(newWebComp);
-                      saveWebComponentConfig(cma, sdk, newWebComp, webCompHtml, setIsSaving);
-                    }}>
-                    {webComponentRefs.map(ref => {
-                      return (
-                        <MenuItem key={ref.sys.id} value={ref.sys.id}>
-                          {ref.fields.title}
-                        </MenuItem>
-                      );
-                    })}
-                  </TextField>
-                );
-              }
-              return '';
-            })) :
-            ('')
-          }
-          {webComponent ? (
-            <Grid container>
-              { isSaving ? (
-                <SyncIcon
-                  sx={{
-                    animation: "spin 1s linear infinite",
-                    "@keyframes spin": {
-                      "0%": {
-                        transform: "rotate(360deg)",
-                      },
-                      "100%": {
-                        transform: "rotate(0deg)",
-                      },
-                    },
-                  }}></SyncIcon>
-              ) : ""}
-              <Grid xs></Grid>
-              <Button
-                variant="contained"
-                disabled={isSaving}
-                onClick={async () => {
-                  saveWebComponentConfig(cma, sdk, webComponent, webCompHtml, setIsSaving);
-                }}>
-                Save
-              </Button>
-            </Grid>
-          ) : ''}
+    <Stack
+      alignItems='stretch'
+      spacing='none'
+      style={{height: '100vh', width: '100vw'}} >
+      <Stack
+        flexDirection='column'
+        alignItems='stretch'
+        spacing='none'
+        style={{width: 380}} >
+        <Stack
+          flexDirection='column'
+          alignItems='stretch'
+          padding='spacingL'
+          style={{overflow: 'auto', flex: 1}} >
+          <RenderWebComp
+            webComponent={webComponent}
+            webComponentEntry={webComponentEntry}
+            webComponentRefs={webComponentRefs}
+            setWebComponent={setWebComponent}
+            setIsSaving={setIsSaving}
+            allWebComps={allWebComps}
+            webCompLookup={webCompLookup}
+            webComponentTagName={webComponentTagName}
+            setWebComponentTagName={setWebComponentTagName}
+            setWebComponentEntry={setWebComponentEntry}
+            setWebComponentRefs={setWebComponentRefs}
+            setWebComponentCPARefs={setWebComponentCPARefs} />
         </Stack>
-      </Grid>
-      <Grid xs sx={{
-          bgcolor: '#eeeeee',
-          height: `100%`,
-          overflowY: 'auto'
-        }}
+        <Stack
+          padding='spacingXs'
+          justifyContent='end'
+          style={{borderTop: `1px solid ${tokens.gray200}`}} >
+          {/* <TextInput
+            value={webComponentEntry.fields?.title ? 
+                  webComponentEntry.fields?.title['en-US'] : ""}
+            type="text"
+            name="title"
+            isDisabled={isSaving}
+            onBlur={async (evt) => {
+              const newCmaEntry = {...webComponentEntry};
+              newCmaEntry.fields.title = {'en-US': evt.target.value};
+              setWebComponentEntry(newCmaEntry);
+
+              setIsSaving(true);
+              const cmaEntry = await cma.entry.get({
+                entryId: sdk.entry.getSys().id,
+              });
+              cmaEntry.fields.title = {'en-US': evt.target.value};
+              await cma.entry.update({
+                entryId: sdk.entry.getSys().id
+              }, cmaEntry);
+              setIsSaving(false);
+            }}
+            onChange={async (evt) => {
+              const newCmaEntry = {...webComponentEntry};
+              newCmaEntry.fields.title = {'en-US': evt.target.value};
+              setWebComponentEntry(newCmaEntry);
+            }}
+          /> */}
+          <Button
+            variant="primary"
+            isLoading={isSaving}
+            onClick={async () => {
+              saveWebComponentConfig(
+                cma, sdk,
+                webComponent,
+                setIsSaving,
+                setWebComponentEntry
+              );
+            }}>
+            Save
+          </Button>
+        </Stack>
+      </Stack>
+      <Stack
         justifyContent="center"
         alignItems="center"
-        display="flex">
+        style={{
+          flex: 1,
+          backgroundColor: tokens.gray200,
+          height: `100%`,
+          overflowY: 'auto'}} >
         <div dangerouslySetInnerHTML={{__html:webCompHtml}}></div>
-      </Grid>
-    </Grid>
+      </Stack>
+    </Stack>
   );
+  
 };
 
 export default EntryEditor;

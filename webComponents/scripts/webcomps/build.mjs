@@ -9,6 +9,8 @@ import { distPath, srcPath } from "../config.mjs";
     entryPoints: [
         `${srcPath}/cui-button/cui-button.ts`,
         `${srcPath}/cui-color-doc/cui-color-doc.ts`,
+        `${srcPath}/cui-button/CUIButton.ts`,
+        `${srcPath}/cui-color-doc/CUIColorDoc.ts`,
     ],
     sassIncludePaths: [
         `${distPath}/web/scss/`,

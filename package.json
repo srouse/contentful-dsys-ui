@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "cd ./webComponents && npm install && npm run build && cd ../contentfulApp && npm install && npm run build && cd ../ssg && npm install && cd ../ && npm run build:ssg",
+    "build:dsys:ssg": "cd ./webComponents && npm run build && cd ../ && npm run build:ssg",
     "build:dsys": "cd ./webComponents && npm run build",
     "build:ssg": "node ./scripts/ssg.mjs",
     "start": "cd ./contentfulApp && npm run start",
