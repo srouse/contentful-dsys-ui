@@ -7,6 +7,7 @@ export default class State {
   webComponents = {};
   entriesToLoad = [];
   assetsToLoad = [];
+  website;
 
   distFolder;
 

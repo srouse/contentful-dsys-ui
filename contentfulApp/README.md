@@ -1,3 +1,13 @@
+TOOK OUT
+"start": "BUILD_PATH='../build/_ctflapp' cross-env BROWSER=none react-scripts start",
+"build": "BUILD_PATH='../build/_ctflapp' react-scripts build",
+"test": "react-scripts test",
+"eject": "react-scripts eject",
+"create-app-definition": "contentful-app-scripts create-app-definition",
+"upload": "contentful-app-scripts upload --bundle-dir ./build",
+"upload-ci": "contentful-app-scripts upload --ci --bundle-dir ./build --organization-id 
+
+
 This project was bootstrapped with [Create Contentful App](https://github.com/contentful/create-contentful-app).
 
 ## How to use

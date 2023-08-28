@@ -26,7 +26,8 @@ export default function renderState(state) {
 async function createWebCompHtml(finalFolder, webComp, state) {
   await fs.mkdir(finalFolder, { recursive: true });
   const config = webComp.fields.configuration;
-  const html = `<${
+
+  const componentHtml = `<${
     config.tagName
   } ${config.members.map(member => {
     if (
@@ -44,9 +45,22 @@ async function createWebCompHtml(finalFolder, webComp, state) {
     config.tagName
   }>`;
 
+  let html = componentHtml;
+  if (state.website) {
+    html = state.website.fields.htmlFullTemplate?.replace(
+      /{{content}}/g, componentHtml
+    ).replace(
+      /{{metadata}}/g, ''
+    ).replace(
+      /{{header}}/g, ''
+    ).replace(
+      /{{footer}}/g, ''
+    );
+  }
+
   await fs.writeFile(
     `${finalFolder}/index.html`,
-    state.config.renderHtml(webComp, html)
+    html // state.config.renderHtml(webComp, html)
   );
 }
 

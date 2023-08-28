@@ -20,13 +20,26 @@ export async function build (
   if (!state.client) return;
   state.config = config;
   state.context.totalCalls++;
-  const results = await state.client.getEntries({ 
+
+  // Get all Web Components (aka all views including pages...)
+  const webCompResults = await state.client.getEntries({ 
     'content_type': 'webComponent',
     ['metadata.tags.sys.id[all]']: config.tags, 
     'include': CONTENTFUL_INCLUDE
   }).catch(console.error);
+  processContentfulResults(webCompResults, state);
 
-  processContentfulResults(results, state);
+  // Get website (has page templates, header, footer, metadata)
+  const websiteResults = await state.client.getEntries({ 
+    'content_type': 'website',
+    ['metadata.tags.sys.id[all]']: config.tags, 
+    'include': CONTENTFUL_INCLUDE
+  }).catch(console.error);
+  if (websiteResults.total > 0) {
+    state.website = websiteResults.items[0];
+  }
+  processContentfulResults(websiteResults, state);
+
   await loadEntriesToLoad(state);
 
   // good to go, render
@@ -36,6 +49,7 @@ export async function build (
     `${state.config.destination}/state.json`,
     JSON.stringify(state, null, 2)
   );
+
   console.log(state.generateSummary())
 }
 

@@ -2,7 +2,7 @@
     "component": {
       "button": {
         "background" : {
-            "value": "{color.merna.01}"
+            "value": "{color.primary.01}"
         },
         "padding" : {
             "value": "{size.4}"

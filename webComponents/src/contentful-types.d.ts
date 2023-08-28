@@ -348,6 +348,43 @@ export interface IWebComponent extends Entry<IWebComponentFields> {
   };
 }
 
+export interface IWebsiteFields {
+  /** Title */
+  title?: string | undefined;
+
+  /** HTML Full Template */
+  htmlFullTemplate?: string | undefined;
+
+  /** HTML Simple Template */
+  htmlSimpleTemplate?: string | undefined;
+
+  /** Metadata */
+  metadata?: IWebComponent | undefined;
+
+  /** Header */
+  header?: IWebComponent | undefined;
+
+  /** Footer */
+  footer?: IWebComponent | undefined;
+}
+
+export interface IWebsite extends Entry<IWebsiteFields> {
+  sys: {
+    id: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    locale: string;
+    contentType: {
+      sys: {
+        id: "website";
+        linkType: "ContentType";
+        type: "Link";
+      };
+    };
+  };
+}
+
 export type CONTENT_TYPE =
   | "blogPost"
   | "idea"
@@ -357,7 +394,8 @@ export type CONTENT_TYPE =
   | "readmePage"
   | "readmeProject"
   | "url"
-  | "webComponent";
+  | "webComponent"
+  | "website";
 
 export type IEntry =
   | IBlogPost
@@ -368,7 +406,8 @@ export type IEntry =
   | IReadmePage
   | IReadmeProject
   | IUrl
-  | IWebComponent;
+  | IWebComponent
+  | IWebsite;
 
 export type LOCALE_CODE = "en-US";
 

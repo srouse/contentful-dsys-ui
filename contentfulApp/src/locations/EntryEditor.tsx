@@ -4,7 +4,6 @@ import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
 import Grid from '@mui/material/Unstable_Grid2';
 import webComps from 'contentful-auto-ui/web-comps/custom-elements.json';
 import { WebComponent } from '../types';
-import memberToInput from '../utils/memberToInput';
 import saveWebComponentConfig from '../utils/saveWebComponentConfig';
 import SyncIcon from '@mui/icons-material/Sync';
 import { Entry } from 'contentful-management';
@@ -13,6 +12,7 @@ import { Button, Stack } from '@contentful/f36-components';
 import tokens from '@contentful/f36-tokens';
 import RenderWebComp from './entryEditor/RenderWebComp';
 import loadContentfulRefs from '../utils/loadContentfulRefs';
+import SSG from '../utils/SSG';
 
 const EntryEditor = () => {
   const sdk = useSDK<EditorAppSDK>();
@@ -22,11 +22,12 @@ const EntryEditor = () => {
   const [webCompLookup, setWebCompLookup] = useState<{[key:string]:WebComponent}>({});
   const [webComponentTagName, setWebComponentTagName] = useState<string>('none');
   const [webComponent, setWebComponent] = useState<WebComponent | undefined>();
-  const [webCompHtml, setWebCompHtml] = useState<string>('');
   const [webComponentEntry, setWebComponentEntry] = useState<any>('');
   const [webComponentRefs, setWebComponentRefs] = useState<Entry[]>([]);
   const [webComponentCPARefs, setWebComponentCPARefs] = useState<EntryCPA<unknown>[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [ssg, ] = useState<SSG>(new SSG());
+  const [iframeContent, setIframeContent] = useState<string>('');
 
   useEffect(() => {
     (async () => {
@@ -42,6 +43,8 @@ const EntryEditor = () => {
         setWebComponentCPARefs, setWebComponentRefs
       );
       setWebComponentEntry(cmaEntry);
+
+      ssg.establishWebsite(cmaEntry, sdk);
 
       // gather comps
       const newAllWebComps: {value: string, name: string}[] = [];
@@ -90,35 +93,21 @@ const EntryEditor = () => {
       setWebCompLookup(newWebCompLookup);
       setAllWebComps(newAllWebComps);
     })();
-  }, [cma, sdk]);
+  }, [cma, sdk, ssg]);
   
   // WEB COMP HTML
   useEffect(() => {
-    if (!webComponent) {
-      setWebCompHtml('');
-      return;
-    }
-    const attr: string[] = [];
-    webComponent.members.map(member => {
-      const input = memberToInput(member);
-      if (input.type === 'reference') {
-        const inputRef = webComponentCPARefs.find(ref => ref.sys.id === input.value);
-        if (inputRef) {
-          attr.push(`${input.attribute}="${JSON.stringify(inputRef).replace(/"/g, '&quot;')}"`);
-        }
-      }else{
-        attr.push(`${input.attribute}="${input.value}"`);
-      }
-      return true;
-    });
-
-    const output =
-      `<${webComponent?.tagName} ${
-          attr.join(' ')
-        }></${webComponent?.tagName}>`;
-
-    setWebCompHtml(output);
-  }, [webComponent, setWebCompHtml, setIsSaving, cma, sdk, webComponentCPARefs]);
+    (async () => {
+      const html = await ssg.render(webComponent, webComponentCPARefs);
+      setIframeContent(html);
+      console.log('ssg.render()',html);
+    })();
+  }, [
+    webComponent,
+    setIframeContent,
+    ssg,
+    webComponentCPARefs
+  ]);
 
   if (!webComponent) {
     return (
@@ -175,33 +164,6 @@ const EntryEditor = () => {
           padding='spacingXs'
           justifyContent='end'
           style={{borderTop: `1px solid ${tokens.gray200}`}} >
-          {/* <TextInput
-            value={webComponentEntry.fields?.title ? 
-                  webComponentEntry.fields?.title['en-US'] : ""}
-            type="text"
-            name="title"
-            isDisabled={isSaving}
-            onBlur={async (evt) => {
-              const newCmaEntry = {...webComponentEntry};
-              newCmaEntry.fields.title = {'en-US': evt.target.value};
-              setWebComponentEntry(newCmaEntry);
-
-              setIsSaving(true);
-              const cmaEntry = await cma.entry.get({
-                entryId: sdk.entry.getSys().id,
-              });
-              cmaEntry.fields.title = {'en-US': evt.target.value};
-              await cma.entry.update({
-                entryId: sdk.entry.getSys().id
-              }, cmaEntry);
-              setIsSaving(false);
-            }}
-            onChange={async (evt) => {
-              const newCmaEntry = {...webComponentEntry};
-              newCmaEntry.fields.title = {'en-US': evt.target.value};
-              setWebComponentEntry(newCmaEntry);
-            }}
-          /> */}
           <Button
             variant="primary"
             isLoading={isSaving}
@@ -225,7 +187,16 @@ const EntryEditor = () => {
           backgroundColor: tokens.gray200,
           height: `100%`,
           overflowY: 'auto'}} >
-        <div dangerouslySetInnerHTML={{__html:webCompHtml}}></div>
+        {/* <div dangerouslySetInnerHTML={{__html:webCompHtml}}></div> */}
+        <iframe
+          style={{
+            border: 'none',
+            width: '100%',
+            height: '100%'
+          }}
+          title="component iframe"
+          srcDoc={iframeContent}>
+        </iframe>
       </Stack>
     </Stack>
   );

@@ -22,14 +22,14 @@
             "type": "color",
             "description": ""
         },
-        "merna" : {
+        "primary" : {
             "03" : {
-                "value": "{color.merna.03}",
+                "value": "{color.primary.03}",
                 "type": "color",
                 "description": ""
             },
             "dark" : {
-                "value": "{color.merna.01}",
+                "value": "{color.primary.01}",
                 "type": "color",
                 "description": ""
             }
@@ -64,7 +64,7 @@
             "description": "" 
         },
         "error" : {
-            "value": "{color.merna.02}",
+            "value": "{color.primary.02}",
             "type": "color",
             "description": "" 
         },

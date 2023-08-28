@@ -21,30 +21,11 @@ import ${config.name} from '${webCompClassJsPath(webComp)}';
 ${content}`;
 };
 
-const renderHtml = (
-  webComp,
-  content,
-  // state
-) => {
-  return `
-<!DOCTYPE html>
-<html lang="en" data-web-comp-id="${webComp?.sys.id}">
-<head>
-  <script src="${webCompJsPath(webComp)}" type="module"></script>
-  <link href="/_webcomps/web/css/_variables.css" rel="stylesheet"></link>
-</head>
-<body>
-  ${content}
-</body>
-</html>`;
-};
-
 (async () => {
   await build({
       tags: 'contentfulDesignSystemExample',
       destination: './build',
       webCompJsPath,
-      renderWebComp,
-      renderHtml
+      renderWebComp
   });
 })();
