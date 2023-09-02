@@ -28,12 +28,15 @@ const EntryEditor = () => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [ssg, ] = useState<SSG>(new SSG());
   const [iframeContent, setIframeContent] = useState<string>('');
+  const [invalidated, setInvalidated] = useState<number>(0);
 
   useEffect(() => {
     (async () => {
+      console.log('ddd');
       const cmaEntry = await cma.entry.get({
         entryId: sdk.entry.getSys().id,
       });
+
       let configWebComp: WebComponent | undefined;
       if (cmaEntry.fields.configuration) {
         configWebComp = cmaEntry.fields.configuration['en-US'] as WebComponent;
@@ -93,14 +96,13 @@ const EntryEditor = () => {
       setWebCompLookup(newWebCompLookup);
       setAllWebComps(newAllWebComps);
     })();
-  }, [cma, sdk, ssg]);
+  }, [cma, sdk, ssg, invalidated]);
   
   // WEB COMP HTML
   useEffect(() => {
     (async () => {
       const html = await ssg.render(webComponent, webComponentCPARefs);
       setIframeContent(html);
-      console.log('ssg.render()',html);
     })();
   }, [
     webComponent,
@@ -158,7 +160,11 @@ const EntryEditor = () => {
             setWebComponentTagName={setWebComponentTagName}
             setWebComponentEntry={setWebComponentEntry}
             setWebComponentRefs={setWebComponentRefs}
-            setWebComponentCPARefs={setWebComponentCPARefs} />
+            setWebComponentCPARefs={setWebComponentCPARefs}
+            invalidate={() => {
+              console.log('invalidate', invalidated);
+              setInvalidated(invalidated+1);
+            }} />
         </Stack>
         <Stack
           padding='spacingXs'

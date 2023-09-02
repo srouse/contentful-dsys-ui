@@ -5,7 +5,10 @@ const WEB_COMP_ID = 'webComponent';
 export default function renderState(state) {
   return Promise.all(
     Object.values(state.entries).map(entry => {
-      const finalFolder = `${state.config.destination}/${entry.sys.id}`;
+      let finalFolder = `${state.config.destination}/${entry.sys.id}`;
+      if (entry.fields.slug) {
+        finalFolder = `${state.config.destination}/${entry.fields.slug}`;
+      }
       if (entry.sys.contentType.sys.id === WEB_COMP_ID) {
         return (async ()=> {
           await createContentfulDataCache(finalFolder, entry);
@@ -74,8 +77,16 @@ async function createContentfulDataCache(finalFolder, entry) {
 
 async function createWebComp(finalFolder, webComp, state) {
   const config = webComp.fields.configuration;
-  const className = `${config.name}${webComp.sys.id}`;
-  const tagName = `${config.tagName}-${webComp.sys.id}`.toLowerCase();
+  const slug = webComp.fields.slug ?
+    webComp.fields.slug.substring(0, webComp.fields.slug.length-1) : undefined;
+  const classId = slug ?
+    slug.replace(/\/./g, x=>x[1].toUpperCase()) :
+    webComp.sys.id;
+  const className = `${config.name}${classId}`;
+  const tagId = slug ?
+    slug.replace(/\/./g, '-') :
+    `-${webComp.sys.id}`;
+  const tagName = `${config.tagName}${tagId}`.toLowerCase();
   const webCompJS = `
 export default class ${className} extends ${config.name} {
   ${config.members.map(member => {

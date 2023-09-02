@@ -1,12 +1,15 @@
 import { Entry } from "contentful-management";
 import { WebComponent } from "../../types";
-import { Dispatch, SetStateAction } from "react";
-import { FormControl, Select, TextInput } from "@contentful/f36-components";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Button, Flex, FormControl, Select, Text } from "@contentful/f36-components";
 import { useCMA, useSDK } from "@contentful/react-apps-toolkit";
-import { EditorAppSDK } from "@contentful/app-sdk";
+import { EditorAppSDK, FieldAppSDK } from "@contentful/app-sdk";
 import MemberInput from "./MemberInput";
 import saveWebComponentConfig from "../../utils/saveWebComponentConfig";
 import { Entry as EntryCPA } from 'contentful';
+import MetadataModal from "./MetadataModal";
+import tokens from "@contentful/f36-tokens";
+import { SettingsIcon } from '@contentful/f36-icons';
 
 type RenderWebCompProps = {
   webComponentEntry: any,
@@ -21,6 +24,7 @@ type RenderWebCompProps = {
   setWebComponentEntry: (val:any) => void,
   setWebComponentRefs: (val:Entry[]) => void,
   setWebComponentCPARefs: (val:EntryCPA<unknown>[]) => void,
+  invalidate: () => void,
 }
 
 const RenderWebComp = ({
@@ -35,45 +39,49 @@ const RenderWebComp = ({
   setWebComponentTagName,
   setWebComponentEntry,
   setWebComponentRefs,
-  setWebComponentCPARefs
+  setWebComponentCPARefs,
+  invalidate
 }: RenderWebCompProps) => {
   const sdk = useSDK<EditorAppSDK>();
   const cma = useCMA();
 
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   return (<>
     {webComponentEntry ? (
-      <FormControl marginBottom="spacing2Xs">
-        <FormControl.Label>
-          Title
-        </FormControl.Label>
-        <TextInput
-          value={webComponentEntry.fields?.title ? 
-                 webComponentEntry.fields?.title['en-US'] : ""}
-          type="text"
-          name="title"
-          onBlur={async (evt) => {
-            const newCmaEntry = {...webComponentEntry};
-            newCmaEntry.fields.title = {'en-US': evt.target.value};
-            setWebComponentEntry(newCmaEntry);
-
-            setIsSaving(true);
-            const cmaEntry = await cma.entry.get({
-              entryId: sdk.entry.getSys().id,
-            });
-            cmaEntry.fields.title = {'en-US': evt.target.value};
-            await cma.entry.update({
-              entryId: sdk.entry.getSys().id
-            }, cmaEntry);
-            setIsSaving(false);
-          }}
-          onChange={async (evt) => {
-            const newCmaEntry = {...webComponentEntry};
-            newCmaEntry.fields.title = {'en-US': evt.target.value};
-            setWebComponentEntry(newCmaEntry);
-          }}
-        />
-      </FormControl>
+      <Flex
+        flexDirection="row"
+        paddingBottom="spacingS"
+        style={{borderBottom: `1px solid ${tokens.gray300}`}}
+        alignItems="center">
+        <Flex flexDirection="column"
+          flex={1}>
+          <Text
+            fontSize="fontSizeL"
+            fontWeight="fontWeightDemiBold"
+            marginBottom="spacing2Xs">{
+            webComponentEntry.fields?.title ? 
+              webComponentEntry.fields?.title['en-US'] : ""
+          }</Text>
+          <Text>{
+            webComponentEntry.fields?.slug ? 
+              webComponentEntry.fields?.slug['en-US'] : "(no slug)"
+          }</Text>
+        </Flex>
+        <Button onClick={() => setShowModal(true)}
+          startIcon={<SettingsIcon variant="muted" />}
+          variant="transparent"
+          size="small">
+        </Button>
+      </Flex>
     ) : ""}
+
+    <MetadataModal
+      showModal={showModal}
+      closeModal={() => {
+        invalidate();
+        setShowModal(false);
+      }} />
 
     <FormControl marginBottom="spacing2Xs">
       <FormControl.Label>

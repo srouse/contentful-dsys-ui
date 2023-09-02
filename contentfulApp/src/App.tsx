@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import { locations } from '@contentful/app-sdk';
 import ConfigScreen from './locations/ConfigScreen';
-import Field from './locations/Field';
+import Field from './locations/otherLocations/Field';
 import EntryEditor from './locations/EntryEditor';
-import Dialog from './locations/Dialog';
-import Sidebar from './locations/Sidebar';
-import Page from './locations/Page';
-import Home from './locations/Home';
+import Dialog from './locations/otherLocations/Dialog';
+import Sidebar from './locations/otherLocations/Sidebar';
+import Page from './locations/otherLocations/Page';
+import Home from './locations/otherLocations/Home';
 import { useSDK } from '@contentful/react-apps-toolkit';
 
 const ComponentLocationSettings = {
