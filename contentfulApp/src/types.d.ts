@@ -12,6 +12,7 @@ export type WebComponent = {
   },
   tagName: string,
   customElement: boolean
+  slots?: WebComponentMember[]
 }
 
 export type WebComponentAttribute = {
@@ -33,15 +34,21 @@ export type WebComponentMember = {
   attribute: string,
   reflects: boolean,
   value?: string,
+  valueArr? : string[],
   description?: string,
 }
 
+export type MemberInputType = 
+'string' | 'select' |
+'reference' | 'referenceArray'
+
 export type MemberInput = {
   default?: string,
-  type: 'string' | 'select' | 'reference',
+  type: MemberInputType,
   selectItems?: string[],
   attribute: string,
   value?: string,
+  valueArr?: string[],
   description?: string,
 }
 

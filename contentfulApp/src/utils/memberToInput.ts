@@ -1,19 +1,23 @@
 import { MemberInput, WebComponentMember } from "../types";
-import isContentfulRef from "./isContentfulRef";
+import { contentfulRefType } from "./isContentfulRef";
 
 
 export default function memberToInput(
   member: WebComponentMember
 ) {
+
   const input: MemberInput = {
     type: 'string',
     attribute: member.attribute,
     value: member.value || member.default?.replace(/'/g, ''),
+    valueArr: member.valueArr,
     description: member.description
   };
 
-  if (isContentfulRef(member)) {
-    input.type = 'reference';
+  const refType = contentfulRefType(member);
+
+  if (refType) {
+    input.type = refType;
   }else {
     if (member.type.text === 'string') {
       input.type = 'string';

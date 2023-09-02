@@ -2,15 +2,18 @@ import { EditorAppSDK, FieldAppSDK } from "@contentful/app-sdk";
 import { Field, FieldWrapper } from "@contentful/default-field-editors";
 import { Button, Modal } from "@contentful/f36-components";
 import { useSDK } from "@contentful/react-apps-toolkit";
+import { ReactElement } from "react";
 
 type MetadataModalProps = {
   showModal: boolean,
   closeModal: () => void,
+  componentSelector: ReactElement<any, any>
 }
 
 const MetadataModal = ({
   showModal,
-  closeModal
+  closeModal,
+  componentSelector
 }: MetadataModalProps) => {
   const sdk = useSDK<EditorAppSDK>();
 
@@ -29,7 +32,7 @@ const MetadataModal = ({
         {() => (
           <>
             <Modal.Header
-              title=""
+              title="Web Component Metadata"
               onClose={() => closeModal()}
             />
             <Modal.Content>
@@ -39,6 +42,7 @@ const MetadataModal = ({
               <FieldWrapper sdk={slugSDK} name={'Slug'}>
                 <Field sdk={slugSDK} />
               </FieldWrapper>
+              {componentSelector}
             </Modal.Content>
             <Modal.Controls>
               <Button

@@ -45,7 +45,8 @@ export default class SSG {
 
   async render(
     webComponent: WebComponent | undefined,
-    webComponentCPARefs: EntryCPA<unknown>[]
+    webComponentCPARefs: EntryCPA<unknown>[],
+    slotName? : string,
   ): Promise<string> {
     if (!webComponent) {
       return '';
@@ -54,12 +55,42 @@ export default class SSG {
       await this.findWebsite();
     }
     const attr: string[] = [];
+    const slotPromises: Promise<string>[] = [];
+    webComponent.slots?.map(slot => {
+      const input = memberToInput(slot);
+      const inputRefs = input.valueArr?.map(val => {
+        return webComponentCPARefs.find(ref => ref.sys.id === val);
+      });
+      if (inputRefs) {
+        inputRefs.map((inputRef) => {
+          if (!inputRef) return false;
+          slotPromises.push(
+            this.render(
+              (inputRef.fields as any).configuration as WebComponent,
+              webComponentCPARefs,
+              slot.name
+            )
+          );
+          return true;
+        });
+      }
+      return true;
+    });
     webComponent.members.map(member => {
       const input = memberToInput(member);
-      if (input.type === 'reference') {
-        const inputRef = webComponentCPARefs.find(ref => ref.sys.id === input.value);
-        if (inputRef) {
-          attr.push(`${input.attribute}="${JSON.stringify(inputRef).replace(/"/g, '&quot;')}"`);
+      if (
+        input.type === 'reference' ||
+        input.type === 'referenceArray'
+      ) {
+        const valueArr = input.type === 'reference' ?
+          [input.value] : input.valueArr;
+        const inputRefs = valueArr?.map(val => {
+          return webComponentCPARefs.find(ref => ref.sys.id === val);
+        });
+        if (inputRefs) {
+          attr.push(`${input.attribute}="${
+            JSON.stringify(inputRefs).replace(/"/g, '&quot;')
+          }"`);
         }
       }else{
         attr.push(`${input.attribute}="${input.value}"`);
@@ -67,10 +98,12 @@ export default class SSG {
       return true;
     });
 
+    const slots = await Promise.all(slotPromises);
+
     const componentHtml =
       `<${webComponent?.tagName} ${
           attr.join(' ')
-        }></${webComponent?.tagName}>`;
+        }${slotName ? ` slot="${slotName}"` : ''}>${slots.join('')}</${webComponent?.tagName}>`;
 
     let html = this.website?.fields.htmlFullTemplate?.replace(
       /{{content}}/g, componentHtml

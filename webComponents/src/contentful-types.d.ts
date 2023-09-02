@@ -321,6 +321,9 @@ export interface IWebComponentFields {
   /** Title */
   title?: string | undefined;
 
+  /** Slug */
+  slug?: string | undefined;
+
   /** Configuration */
   configuration?: Record<string, any> | undefined;
 

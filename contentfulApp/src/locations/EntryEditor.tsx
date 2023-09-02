@@ -32,7 +32,6 @@ const EntryEditor = () => {
 
   useEffect(() => {
     (async () => {
-      console.log('ddd');
       const cmaEntry = await cma.entry.get({
         entryId: sdk.entry.getSys().id,
       });
@@ -75,16 +74,36 @@ const EntryEditor = () => {
               newWebComp.members[index] = {
                 ...member,
                 value: configMember.value,
+                valueArr: configMember.valueArr,
               };
             }
             return true;
           });
+          newWebComp.slots.map((slot: any, index: number) => {
+            slot.kind = 'slot';// align with member...
+            slot.attribute = slot.name || 'default';
+            const configSlot = configWebComp?.slots?.find(
+              configSlot => configSlot.name === slot.name
+            );
+            if (configSlot) {
+              newWebComp.slots[index] = {
+                ...slot,
+                value: configSlot.value,
+                valueArr: configSlot.valueArr,
+              };
+            }
+            return true;
+          });
+
           setWebComponent(newWebComp);
           setWebComponentTagName(configWebComp.tagName);
         }else{
           firstDeclaration.members.map((member) => {
             if (!member.value) {
               member.value = member.default?.replace(/'/g, '');
+            }
+            if (!member.valueArr) {
+              member.valueArr = [];
             }
             return true;
           });
@@ -111,7 +130,7 @@ const EntryEditor = () => {
     webComponentCPARefs
   ]);
 
-  if (!webComponent) {
+  if (!webComponentEntry) {
     return (
       <Grid container
         alignItems="center"

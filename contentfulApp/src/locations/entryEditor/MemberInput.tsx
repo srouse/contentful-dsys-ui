@@ -8,6 +8,7 @@ import saveWebComponentConfig from "../../utils/saveWebComponentConfig";
 import ReferenceInput from "./ReferenceInput";
 import { Entry } from "contentful-management";
 import { Entry as EntryCPA } from 'contentful';
+import ReferenceArrayInput from "./ReferenceArrayInput";
 
 type ReferenceInputProps = {
   member: WebComponentMember,
@@ -41,7 +42,7 @@ const MemberInput = ({
           {member.name}
         </FormControl.Label>
         <TextInput
-          value={member.value}
+          value={!Array.isArray(member.value) ? member.value : ''}
           type="text"
           name={member.name}
           placeholder={member.description}
@@ -91,9 +92,26 @@ const MemberInput = ({
         </Select>
       </FormControl>
     );
-  }else if (input.type === 'reference') {
+  }else if (
+    input.type === 'reference'
+  ) {
     return (
       <ReferenceInput
+        member={member}
+        input={input}
+        setIsSaving={setIsSaving}
+        webComponent={webComponent}
+        setWebComponent={setWebComponent}
+        webComponentRefs={webComponentRefs}
+        setWebComponentEntry={setWebComponentEntry}
+        setWebComponentRefs={setWebComponentRefs}
+        setWebComponentCPARefs={setWebComponentCPARefs} />
+    );
+  }else if (
+    input.type === 'referenceArray'
+  ) {
+    return (
+      <ReferenceArrayInput
         member={member}
         input={input}
         setIsSaving={setIsSaving}

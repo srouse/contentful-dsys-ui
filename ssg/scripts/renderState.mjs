@@ -30,19 +30,40 @@ async function createWebCompHtml(finalFolder, webComp, state) {
   await fs.mkdir(finalFolder, { recursive: true });
   const config = webComp.fields.configuration;
 
+  // slots...
+
   const componentHtml = `<${
     config.tagName
   } ${config.members.map(member => {
+
+    // Reference (single)
     if (
-      member.type.text.indexOf('ContentfulEntry') === 0
+      member.type.text.indexOf('ContentfulEntry') === 0 &&
+      member.type.text.lastIndexOf('[]]') !== member.type.text.length -2
     ) {
       const entry = state.getEntry(member.value);
       if (entry) {
-        return member.value ? `${member.name}="${
+        return `${member.name}="${
           JSON.stringify(entry).replace(/"/g, '&quot;')
-        }"` : '';
+        }"`;
       }
     }
+
+    // Reference Array
+    if (
+      member.type.text.indexOf('ContentfulEntry') === 0 &&
+      member.type.text.lastIndexOf('[]') === member.type.text.length -2
+    ) {
+      const entries = member.valueArr.map(val => {
+        return state.getEntry(val);
+      })
+      if (entries) {
+        return `${member.name}="${
+          JSON.stringify(entries).replace(/"/g, '&quot;')
+        }"`;
+      }
+    }
+  
     return member.value ? `${member.name}="${member.value}"` : '';
   }).join(' ')}></${
     config.tagName
@@ -87,6 +108,7 @@ async function createWebComp(finalFolder, webComp, state) {
     slug.replace(/\/./g, '-') :
     `-${webComp.sys.id}`;
   const tagName = `${config.tagName}${tagId}`.toLowerCase();
+
   const webCompJS = `
 export default class ${className} extends ${config.name} {
   ${config.members.map(member => {

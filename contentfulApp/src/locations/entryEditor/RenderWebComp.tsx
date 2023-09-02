@@ -3,7 +3,7 @@ import { WebComponent } from "../../types";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Button, Flex, FormControl, Select, Text } from "@contentful/f36-components";
 import { useCMA, useSDK } from "@contentful/react-apps-toolkit";
-import { EditorAppSDK, FieldAppSDK } from "@contentful/app-sdk";
+import { EditorAppSDK } from "@contentful/app-sdk";
 import MemberInput from "./MemberInput";
 import saveWebComponentConfig from "../../utils/saveWebComponentConfig";
 import { Entry as EntryCPA } from 'contentful';
@@ -13,7 +13,7 @@ import { SettingsIcon } from '@contentful/f36-icons';
 
 type RenderWebCompProps = {
   webComponentEntry: any,
-  webComponent: WebComponent,
+  webComponent?: WebComponent,
   webComponentRefs: Entry[],
   allWebComps: {value: string, name: string}[],
   webCompLookup: {[key:string]:WebComponent},
@@ -63,9 +63,14 @@ const RenderWebComp = ({
             webComponentEntry.fields?.title ? 
               webComponentEntry.fields?.title['en-US'] : ""
           }</Text>
-          <Text>{
+          <Text
+            fontSize="fontSizeS">slug: {
             webComponentEntry.fields?.slug ? 
               webComponentEntry.fields?.slug['en-US'] : "(no slug)"
+          }</Text>
+          <Text
+            fontSize="fontSizeS">component: {
+              webComponent?.tagName
           }</Text>
         </Flex>
         <Button onClick={() => setShowModal(true)}
@@ -81,42 +86,46 @@ const RenderWebComp = ({
       closeModal={() => {
         invalidate();
         setShowModal(false);
-      }} />
-
-    <FormControl marginBottom="spacing2Xs">
-      <FormControl.Label>
-        Component
-      </FormControl.Label>
-      <Select
-        name="Component"
-        value={webComponentTagName}
-        onChange={(event) => {
-          const newWebComp = webCompLookup[event.target.value];
-          setWebComponentTagName(event.target.value);
-          if (newWebComp) {
-            setWebComponent({...newWebComp});
-          }else{
-            setWebComponent(undefined);
-          }
-          saveWebComponentConfig(
-            cma, sdk,
-            newWebComp,
-            setIsSaving,
-            setWebComponentEntry
-          );
-        }}>
-        <Select.Option value={'none'}>
-          No Web Component Selected
-        </Select.Option>
-        {allWebComps.map(webComp => {
-          return (
-            <Select.Option key={webComp.value} value={webComp.value}>
-              {webComp.name}
+      }}
+      componentSelector={(
+        <FormControl
+          marginLeft="spacingL"
+          marginRight="spacingL"
+          marginBottom="spacing2Xs">
+          <FormControl.Label>
+            Component
+          </FormControl.Label>
+          <Select
+            name="Component"
+            value={webComponentTagName}
+            onChange={(event) => {
+              const newWebComp = webCompLookup[event.target.value];
+              setWebComponentTagName(event.target.value);
+              if (newWebComp) {
+                setWebComponent({...newWebComp});
+              }else{
+                setWebComponent(undefined);
+              }
+              saveWebComponentConfig(
+                cma, sdk,
+                newWebComp,
+                setIsSaving,
+                setWebComponentEntry
+              );
+            }}>
+            <Select.Option value={'none'}>
+              No Web Component Selected
             </Select.Option>
-          );
-        })}
-      </Select>
-    </FormControl>
+            {allWebComps.map(webComp => {
+              return (
+                <Select.Option key={webComp.value} value={webComp.value}>
+                  {webComp.name}
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </FormControl>
+      )} />
 
     {webComponent ? 
       (webComponent.members.map((member, index) => {
@@ -124,6 +133,24 @@ const RenderWebComp = ({
           <MemberInput
             key={`input_${member.name}_${index}`}
             member={member}
+            setIsSaving={setIsSaving}
+            webComponent={webComponent}
+            setWebComponent={setWebComponent}
+            webComponentRefs={webComponentRefs}
+            setWebComponentEntry={setWebComponentEntry}
+            setWebComponentRefs={setWebComponentRefs}
+            setWebComponentCPARefs={setWebComponentCPARefs} />
+        );
+      })) :
+      ('')
+    }
+
+    {webComponent ? 
+      (webComponent.slots?.map((slot, index) => {
+        return (
+          <MemberInput
+            key={`slot_${slot.name}_${index}`}
+            member={slot}
             setIsSaving={setIsSaving}
             webComponent={webComponent}
             setWebComponent={setWebComponent}

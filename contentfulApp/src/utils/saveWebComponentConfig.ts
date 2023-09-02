@@ -1,6 +1,6 @@
 import { CMAClient, EditorAppSDK } from "@contentful/app-sdk";
 import { WebComponent } from "../types";
-import isContentfulRef from "./isContentfulRef";
+import { contentfulRefType } from "./isContentfulRef";
 import { Entry } from "contentful-management";
 import loadContentfulRefs from "./loadContentfulRefs";
 import { Entry as EntryCPA } from 'contentful';
@@ -19,10 +19,15 @@ export default async function saveWebComponentConfig(
     entryId: sdk.entry.getSys().id,
   });
   cmaEntry.fields.configuration = {'en-US': config};
-  // cmaEntry.fields.output = {'en-US': output};
+
+  // References...
   const refs: Object[] = [];
   config?.members.map(member => {
-    if (isContentfulRef(member) && member.value) {
+    const refType = contentfulRefType(member);
+    if (
+      (refType === 'reference') &&
+      member.value
+    ) {
       refs.push({
         sys: {
           type: 'Link',
@@ -30,10 +35,44 @@ export default async function saveWebComponentConfig(
           id: member.value
         }
       })
+    }else if (
+      (refType === 'referenceArray') &&
+      member.valueArr
+    ) {
+      member.valueArr.map((val) => {
+        refs.push({
+          sys: {
+            type: 'Link',
+            linkType: 'Entry',
+            id: val
+          }
+        });
+        return true;
+      })
     }
     cmaEntry.fields.references = {'en-US': refs};
     return true;
   });
+  config?.slots?.map(slot => {
+    if (
+      slot.valueArr
+    ) {
+      slot.valueArr.map((val) => {
+        refs.push({
+          sys: {
+            type: 'Link',
+            linkType: 'Entry',
+            id: val
+          }
+        });
+        return true;
+      })
+    }
+    cmaEntry.fields.references = {'en-US': refs};
+    return true;
+  });
+
+
   await cma.entry.update({entryId: sdk.entry.getSys().id}, cmaEntry);
 
   // update component references

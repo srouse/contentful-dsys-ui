@@ -153,7 +153,6 @@ const ReferenceInput = ({
         }}>
         Select Entry
       </Button>
-      {/* <FormControl.HelpText>{member.description}</FormControl.HelpText> */}
     </FormControl>
   );
 }
