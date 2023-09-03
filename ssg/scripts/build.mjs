@@ -1,77 +1,71 @@
-import { processContentfulResults } from "./processContentfulResults.mjs";
-import renderState from "./renderState.mjs";
-import State from "./state.mjs";
 import {promises as fs} from 'fs';
+import SSG from 'contentful-auto-ui/web-comps/utils/ssg/SSG.js';
+import getClient from "./client.mjs";
 
-const CONTENTFUL_INCLUDE = 0;// 10;
-const MAX_LOADED = 1000;
+const WEB_COMP_ID = 'webComponent';
 
 export async function build (
-  config
-  /*
-    tags,
-    destination,
-    webCompJsPath,
-    renderWebComp,
-    renderHtml
-  */
+  config/*
+      {
+        tags,
+        destination,
+        webCompJsPath,
+        webCompClassJsPath,
+      }*/
 ) {
-  const state = new State();
-  if (!state.client) return;
-  state.config = config;
-  state.context.totalCalls++;
+  const client = getClient();
+  const ssg = new SSG(client, config.tags);
+  await ssg.loadEntries();
 
-  // Get all Web Components (aka all views including pages...)
-  const webCompResults = await state.client.getEntries({ 
-    'content_type': 'webComponent',
-    ['metadata.tags.sys.id[all]']: config.tags, 
-    'include': CONTENTFUL_INCLUDE
-  }).catch(console.error);
-  processContentfulResults(webCompResults, state);
-
-  // Get website (has page templates, header, footer, metadata)
-  const websiteResults = await state.client.getEntries({ 
-    'content_type': 'website',
-    ['metadata.tags.sys.id[all]']: config.tags, 
-    'include': CONTENTFUL_INCLUDE
-  }).catch(console.error);
-  if (websiteResults.total > 0) {
-    state.website = websiteResults.items[0];
-  }
-  processContentfulResults(websiteResults, state);
-
-  await loadEntriesToLoad(state);
-
-  // good to go, render
-  await renderState(state);
-  
-  await fs.writeFile(
-    `${state.config.destination}/state.json`,
-    JSON.stringify(state, null, 2)
+  await Promise.all(
+    Object.values(ssg.state.entries).map(entry => {
+      let finalFolder = `${config.destination}/${entry.sys.id}`;
+      if (entry.fields.slug) {
+        // all slugs start with a forward slash
+        finalFolder = `${config.destination}${entry.fields.slug}`;
+      }
+      return (async ()=> {
+        await fs.mkdir(finalFolder, { recursive: true });
+        await createContentfulDataCache(finalFolder, entry);
+        if (entry.sys.contentType.sys.id === WEB_COMP_ID) {
+          await createAndRenderWebCompHtml(
+            finalFolder, entry, ssg
+          );
+          await createAndRenderWebCompJs(
+            finalFolder, entry, ssg,
+            config.webCompClassJsPath
+          );
+        }
+        return finalFolder;
+      })();
+    })
   );
 
-  console.log(state.generateSummary())
+  console.log(ssg.state.generateSummary());
 }
 
-async function loadEntriesToLoad(state) {
-  const totalLeft = state.entriesToLoad.length;
-  if (totalLeft === 0) return;
-  if (!state.client) return;
-
-  state.context.totalCallCycles++;
-  const entriesToLoad = state.entriesToLoad.splice(0, MAX_LOADED);
-
-  state.context.totalCalls++;
-  const entryResults = await state.client.getEntries({
-    [`sys.id[in]`]: entriesToLoad.join(','),
-    // TODO: Figure out what to load and not to load...
-    'include': CONTENTFUL_INCLUDE,
-    'limit': MAX_LOADED,
-  });
-
-  processContentfulResults(
-    entryResults,
-    state
+async function createContentfulDataCache(finalFolder, entry) {
+  await fs.writeFile(
+    `${finalFolder}/data.json`,
+    JSON.stringify(entry, null, 2)
   );
-  await loadEntriesToLoad(state);
+}
+
+async function createAndRenderWebCompHtml(finalFolder, entry, ssg) {
+  const html = await ssg.renderHtml(entry.sys.id);
+  await fs.writeFile(
+    `${finalFolder}/index.html`,
+    html
+  );
+}
+
+async function createAndRenderWebCompJs(
+  finalFolder, entry, ssg,
+  webCompClassJsPath
+) {
+  const webCompJS = await ssg.renderJs(entry.sys.id, webCompClassJsPath);
+  await fs.writeFile(
+    `${finalFolder}/comp.js`,
+    webCompJS
+  );
 }

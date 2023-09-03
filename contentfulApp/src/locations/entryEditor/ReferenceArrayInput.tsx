@@ -133,10 +133,7 @@ const ReferenceArrayInput = ({
     );
   }
 
-
   const valuesArr = member.valueArr || [];
-  console.log('valuesArr', valuesArr);
-  console.log('member', member);
 
   return (
     <FormControl marginBottom="spacing2Xs">
@@ -157,27 +154,29 @@ const ReferenceArrayInput = ({
               status={contentfulEntryStatus(ref)}
               withThumbnail={false}
               onClick={async () => {
-                await sdk.navigator.openEntry(
-                  ref.sys.id, {
-                    slideIn: {
-                      waitForClose: true
-                    }
-                  }
-                );
-                setIsSaving(true);
-                const cmaEntry = await cma.entry.get({
-                  entryId: sdk.entry.getSys().id,
-                });
-                await loadContentfulRefs(
-                  cmaEntry, sdk, cma,
-                  setWebComponentCPARefs, setWebComponentRefs
-                );
-                setWebComponentEntry(cmaEntry);
-                setIsSaving(false);
+                // await sdk.navigator.openEntry(
+                //   ref.sys.id, {
+                //     slideIn: {
+                //       waitForClose: true
+                //     }
+                //   }
+                // );
+                // setIsSaving(true);
+                // const cmaEntry = await cma.entry.get({
+                //   entryId: sdk.entry.getSys().id,
+                // });
+                // await loadContentfulRefs(
+                //   cmaEntry, sdk, cma,
+                //   setWebComponentCPARefs, setWebComponentRefs
+                // );
+                // setWebComponentEntry(cmaEntry);
+                // setIsSaving(false);
               }}
               actions={[
                 <MenuSectionTitle key="title">Actions</MenuSectionTitle>,
-                <MenuItem key="edit">Edit</MenuItem>,
+                <MenuItem key="edit" onClick={() => {
+                  console.log('hola');
+                }}>Edit</MenuItem>,
                 <MenuItem key="download">Download</MenuItem>,
                 <MenuItem key="remove">Remove</MenuItem>,
               ]}

@@ -22,7 +22,7 @@ export default async function esbuild(
 
   if (!config.entryPoints) {
     // eslint-disable-next-line max-len
-    console.error(chalk.red('as of v0.0.43 you have to explicitly set entryPoints in configuration'));
+    console.error(chalk.red('have to explicitly set entryPoints in configuration'));
     process.exit(1);
   }
 

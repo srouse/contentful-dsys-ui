@@ -8,8 +8,7 @@ import 'contentful-auto-ui/app/css/_variables.css'
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import LocalhostWarning from './components/LocalhostWarning';
-import 'contentful-auto-ui/web-comps/cui-button/cui-button';
-import 'contentful-auto-ui/web-comps/cui-color-doc/cui-color-doc';
+import 'contentful-auto-ui/web-comps/';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);

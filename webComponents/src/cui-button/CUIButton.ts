@@ -6,9 +6,6 @@ import { ContentfulEntry } from 'src/types';
 // import { IUrl } from 'src/contentful-types';
 
 /**
- * @slot - You can put some elements here
- * @slot container - You can put some elements here
- * 
  * @cssprop --text-color - Controls the color of foo
  */
 export default class CUIButton extends LitElement {

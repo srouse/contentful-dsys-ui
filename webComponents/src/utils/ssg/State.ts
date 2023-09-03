@@ -1,15 +1,15 @@
-import getClient from "./client.mjs";
-import padNumber from "./paddNumber.mjs";
+import { Entry, Link } from "contentful";
+import { IWebComponent, IWebsite } from "src/contentful-types";
 
 export default class State {
 
-  entries = {};
-  webComponents = {};
-  entriesToLoad = [];
-  assetsToLoad = [];
-  website;
+  entries: {[key:string]: Entry<unknown>} = {};
+  webComponents: {[key:string]: Entry<unknown>[]}  = {};
+  entriesToLoad: string[] = [];
+  assetsToLoad: string[] = [];
+  website: IWebsite;
 
-  distFolder;
+  distFolder: string;
 
   context = {
     totalCalls: 0,
@@ -18,9 +18,9 @@ export default class State {
     totalCallCycles: 0,
   };
 
-  client = getClient();
+  // client = getClient();
 
-  config;// passed via build
+  config: {};// passed via build
   /*
     tags,
     destination,
@@ -29,12 +29,12 @@ export default class State {
     renderHtml
   */
 
-  getEntry(identifier) {
+  getEntry(identifier: string | undefined) : Entry<unknown> | undefined {
     if (!identifier ) return undefined;
     return this.entries[identifier];
   }
 
-  addEntry(entry) {
+  addEntry(entry: Entry<unknown> | undefined) {
     if (
       !entry ||
       !entry.sys ||
@@ -56,12 +56,17 @@ export default class State {
     this.context.totalEntries++;
     this.entries[sysId] = entry;
 
-    if (entry.sys.contentType.sys.id === 'webComponent') {
-      const config = entry.fields.configuration;
-      if (!this.webComponents[config.name]) {
-        this.webComponents[config.name] = [];
+    if (
+      entry.sys.contentType.sys.id === 'webComponent'
+    ) {
+      const webComp = entry as IWebComponent;
+      const config = webComp.fields.configuration;
+      if (config) {
+        if (!this.webComponents[config.name]) {
+          this.webComponents[config.name] = [];
+        }
+        this.webComponents[config.name]!.push(entry);
       }
-      this.webComponents[config.name].push(entry);
     }
 
     // look for child entries 
@@ -80,7 +85,7 @@ export default class State {
     }
   }
 
-  addEntryToLoad(identifier) {
+  addEntryToLoad(identifier: string) {
     if (
       !this.entries[identifier] &&
       !this.entriesToLoad.includes(identifier)
@@ -89,14 +94,14 @@ export default class State {
     }
   }
 
-  addAssetToLoad(id) {
+  addAssetToLoad(id: string) {
     if (!this.assetsToLoad.includes(id)) {
       this.assetsToLoad.push(id);
     }
   }
 
   processValue(
-    value
+    value: Entry<any> | Link<any> | any
   ) {
     if (!value || !value.sys) {// a simple value...
       return;
@@ -120,13 +125,18 @@ export default class State {
 
   generateSummary() {
     return `= SSG API CALLS ===========
-Total Calls:       ${padNumber(this.context.totalCalls)}
-Total Entities:    ${padNumber(this.context.totalEntries)}
-Total Call Cycles: ${padNumber(this.context.totalCallCycles)}
-Errors:            ${padNumber(this.context.errorCalls.length)}${
+Total Calls:       ${this.padNumber(this.context.totalCalls)}
+Total Entities:    ${this.padNumber(this.context.totalEntries)}
+Total Call Cycles: ${this.padNumber(this.context.totalCallCycles)}
+Errors:            ${this.padNumber(this.context.errorCalls.length)}${
   this.context.errorCalls.length > 0 ? 
   `\n${JSON.stringify(this.context.errorCalls, null, 2)}` : ''}
 ===========================`;
+  }
+
+  padNumber(num: number) {
+    const timePadding = new Array(9 - `${num}`.length).join(' ');
+    return `${timePadding}${num}`;
   }
 
 }

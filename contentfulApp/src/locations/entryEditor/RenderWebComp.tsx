@@ -128,7 +128,7 @@ const RenderWebComp = ({
       )} />
 
     {webComponent ? 
-      (webComponent.members.map((member, index) => {
+      (webComponent.members?.map((member, index) => {
         return (
           <MemberInput
             key={`input_${member.name}_${index}`}

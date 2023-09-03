@@ -22,7 +22,7 @@ export default async function saveWebComponentConfig(
 
   // References...
   const refs: Object[] = [];
-  config?.members.map(member => {
+  config?.members?.map(member => {
     const refType = contentfulRefType(member);
     if (
       (refType === 'reference') &&

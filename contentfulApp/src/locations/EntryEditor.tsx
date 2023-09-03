@@ -12,7 +12,8 @@ import { Button, Stack } from '@contentful/f36-components';
 import tokens from '@contentful/f36-tokens';
 import RenderWebComp from './entryEditor/RenderWebComp';
 import loadContentfulRefs from '../utils/loadContentfulRefs';
-import SSG from '../utils/SSG';
+import { getClient } from '../utils/contentfulClient';
+const SSG = require('contentful-auto-ui/web-comps/utils/ssg/SSG.js');
 
 const EntryEditor = () => {
   const sdk = useSDK<EditorAppSDK>();
@@ -26,7 +27,7 @@ const EntryEditor = () => {
   const [webComponentRefs, setWebComponentRefs] = useState<Entry[]>([]);
   const [webComponentCPARefs, setWebComponentCPARefs] = useState<EntryCPA<unknown>[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [ssg, ] = useState<SSG>(new SSG());
+  // const [ssg, ] = useState<SSG>(new SSG());
   const [iframeContent, setIframeContent] = useState<string>('');
   const [invalidated, setInvalidated] = useState<number>(0);
 
@@ -42,11 +43,12 @@ const EntryEditor = () => {
       }
       await loadContentfulRefs(
         cmaEntry, sdk, cma,
-        setWebComponentCPARefs, setWebComponentRefs
+        setWebComponentCPARefs,
+        setWebComponentRefs
       );
       setWebComponentEntry(cmaEntry);
 
-      ssg.establishWebsite(cmaEntry, sdk);
+      // ssg.initialize(cmaEntry, sdk);
 
       // gather comps
       const newAllWebComps: {value: string, name: string}[] = [];
@@ -58,6 +60,8 @@ const EntryEditor = () => {
           return false;
         }
         const firstDeclaration = module.declarations[0] as WebComponent;
+        if (!firstDeclaration || !firstDeclaration.tagName) return false;
+
         newAllWebComps.push({
           value: firstDeclaration.tagName,
           name: firstDeclaration.tagName
@@ -66,7 +70,7 @@ const EntryEditor = () => {
         if (configWebComp && firstDeclaration.name === configWebComp.name) {
           newWebCompLookup[configWebComp.tagName] = configWebComp;
           const newWebComp = JSON.parse(JSON.stringify(firstDeclaration));
-          newWebComp.members.map((member: any, index: number) => {
+          newWebComp.members?.map((member: any, index: number) => {
             const configMember = configWebComp?.members.find(
               configMember => configMember.name === member.name
             );
@@ -79,7 +83,7 @@ const EntryEditor = () => {
             }
             return true;
           });
-          newWebComp.slots.map((slot: any, index: number) => {
+          newWebComp.slots?.map((slot: any, index: number) => {
             slot.kind = 'slot';// align with member...
             slot.attribute = slot.name || 'default';
             const configSlot = configWebComp?.slots?.find(
@@ -98,7 +102,7 @@ const EntryEditor = () => {
           setWebComponent(newWebComp);
           setWebComponentTagName(configWebComp.tagName);
         }else{
-          firstDeclaration.members.map((member) => {
+          firstDeclaration.members?.map((member) => {
             if (!member.value) {
               member.value = member.default?.replace(/'/g, '');
             }
@@ -115,20 +119,26 @@ const EntryEditor = () => {
       setWebCompLookup(newWebCompLookup);
       setAllWebComps(newAllWebComps);
     })();
-  }, [cma, sdk, ssg, invalidated]);
+  }, [cma, sdk, invalidated]);
   
   // WEB COMP HTML
   useEffect(() => {
     (async () => {
-      const html = await ssg.render(webComponent, webComponentCPARefs);
+      if (!webComponentEntry) return;
+      const client = getClient(
+        webComponentEntry.sys.space.sys.id,
+        webComponentEntry.sys.environment.sys.id,
+        sdk.parameters.installation.contentfulPreviewAccessKey,
+        true,
+      );
+      const tagObj = webComponentEntry.metadata?.tags[0];
+      const tag = tagObj?.sys.id;
+      const ssg = new SSG.default(client, tag);
+      await ssg.loadEntries(webComponentEntry.sys.id);
+      const html = await ssg.renderHtml(webComponentEntry.sys.id);
       setIframeContent(html);
     })();
-  }, [
-    webComponent,
-    setIframeContent,
-    ssg,
-    webComponentCPARefs
-  ]);
+  }, [setIframeContent, sdk, webComponentEntry]);
 
   if (!webComponentEntry) {
     return (
