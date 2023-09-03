@@ -37,9 +37,7 @@ export default class CUIButton extends LitElement {
    */
   render(): object {
     return html`
-      <div class="btn ${this.design}">
-        ${this.label || this.url?.fields.title || 'Button'}
-      </div>
+      ${this.label || this.url?.fields.title || 'Button'}
     `;
   }
 }

@@ -25,7 +25,7 @@ const EntryEditor = () => {
   const [webComponent, setWebComponent] = useState<WebComponent | undefined>();
   const [webComponentEntry, setWebComponentEntry] = useState<any>('');
   const [webComponentRefs, setWebComponentRefs] = useState<Entry[]>([]);
-  const [webComponentCPARefs, setWebComponentCPARefs] = useState<EntryCPA<unknown>[]>([]);
+  const [, setWebComponentCPARefs] = useState<EntryCPA<unknown>[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   // const [ssg, ] = useState<SSG>(new SSG());
   const [iframeContent, setIframeContent] = useState<string>('');
@@ -171,7 +171,10 @@ const EntryEditor = () => {
         flexDirection='column'
         alignItems='stretch'
         spacing='none'
-        style={{width: 380}} >
+        style={{
+          width: 380,
+          borderRight: `1px solid var( --cui-border-light )`
+        }} >
         <Stack
           flexDirection='column'
           alignItems='stretch'

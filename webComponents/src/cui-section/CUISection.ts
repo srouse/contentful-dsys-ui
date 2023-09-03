@@ -1,13 +1,12 @@
 import {LitElement, html} from 'lit';
 import {property} from 'lit/decorators.js';
-import styles from './scss/cui-page.scss';
+import styles from './scss/cui-section.scss';
 
 /**
- * @slot {cui-section} - You can put some elements here
- * 
- * @cssprop --text-color - Controls the color of foo
+ * @slot - Children of a section
+ *
  */
-export default class CUIPage extends LitElement {
+export default class CUISection extends LitElement {
 
   static styles = styles;
 
@@ -24,7 +23,7 @@ export default class CUIPage extends LitElement {
    */
   render(): object {
     return html`
-      <slot></slot>
+        section
     `;
   }
 }

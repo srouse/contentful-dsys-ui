@@ -14,6 +14,8 @@ import { distPath, srcPath } from "../config.mjs";
       `${srcPath}/cui-color-doc/CUIColorDoc.ts`,
       `${srcPath}/cui-page/cui-page.ts`,
       `${srcPath}/cui-page/CUIPage.ts`,
+      `${srcPath}/cui-section/cui-section.ts`,
+      `${srcPath}/cui-section/CUISection.ts`,
       `${srcPath}/utils/ssg/SSG.ts`,
     ],
     sassIncludePaths: [

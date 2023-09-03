@@ -3,15 +3,14 @@
 :host {
   display: inline-block;
   width: auto;
-  color: vars.$cui-text;
+  color: white;
   font-family: sans-serif;
   
   slot {
     display: block;
-  }
 
-  ::slotted(*) {
-    width: 100%;
-    box-sizing: border-box;
+    > * {
+      width: 100%;
+    }
   }
 }

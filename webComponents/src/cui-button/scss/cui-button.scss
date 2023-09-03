@@ -1,36 +1,37 @@
 @use 'variables' as vars;
 
-.btn {
+:host {
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: auto;
-    color: white;
+    color: var( --cui-text-inverse );
     font-family: sans-serif;
     
     // background-color: vars.$cui-component-button-background;
     padding: vars.$cui-component-button-padding;
     border-radius: vars.$cui-component-button-corner-radius;
-
-    &.solid {
-      background-color: vars.$cui-component-button-background;
-    }
-
-    &.outline {
-      border: 1px solid vars.$cui-component-button-background;
-      color: vars.$cui-component-button-background;
-    }
-
-    &.none {
-      color: vars.$cui-component-button-background;
-    }
-
-    .sublabel {
-      font-size: 10px;
-    }
-
-    &:hover {
-      cursor: pointer;
-    }
 }
+
+:host([design=solid]) {
+  background-color: vars.$cui-component-button-background;
+}
+
+:host([design=outline]) {
+  border: 1px solid vars.$cui-component-button-background;
+  color: vars.$cui-component-button-background;
+}
+
+:host([design=none]) {
+  color: vars.$cui-component-button-background;
+}
+
+:host([design=sublabel]) {
+  font-size: 10px;
+}
+
+:host(:hover) {
+  cursor: pointer;
+}
+
