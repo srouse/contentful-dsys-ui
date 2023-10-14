@@ -78,6 +78,21 @@ const RenderWebComp = ({
           variant="transparent"
           size="small">
         </Button>
+        <Button onClick={() => {
+            sdk.dialogs.openCurrentApp({
+              title: `${webComponentEntry.fields?.title ? 
+                webComponentEntry.fields?.title['en-US'] : ""} Editor`,
+              width: 'fullWidth',
+              // position: 'top',
+              // allowHeightOverflow: false,
+              minHeight: '80vh',
+              shouldCloseOnOverlayClick: true,
+            });
+          }}
+          startIcon={<SettingsIcon variant="muted" />}
+          variant="transparent"
+          size="small">
+        </Button>
       </Flex>
     ) : ""}
 

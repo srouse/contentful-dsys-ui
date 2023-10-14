@@ -1,7 +1,7 @@
 import {LitElement, html} from 'lit';
 import {property} from 'lit/decorators.js';
 import styles from './scss/cui-button.scss';
-import { IUrl } from 'src/contentful-types';
+import { IUrl, IUrlFields } from 'src/contentful-types';
 import { ContentfulEntry } from 'src/types';
 // import { IUrl } from 'src/contentful-types';
 
@@ -25,7 +25,7 @@ export default class CUIButton extends LitElement {
 
   /** Contentful Reference to a URL Entry */
   @property({type: Object, attribute: 'second-url'})
-    secondUrl: ContentfulEntry<IUrl>;
+    secondUrl: ContentfulEntry<IUrlFields["title"]>;
 
   constructor() {
     super();

@@ -1,5 +1,5 @@
 import { EditorAppSDK } from "@contentful/app-sdk";
-import { Button, EntityList, EntryCard, FormControl, MenuItem, MenuSectionTitle, Text, } from "@contentful/f36-components";
+import { Button, EntityList, Flex, FormControl, IconButton, Menu, MenuItem, MenuSectionTitle, Text, } from "@contentful/f36-components";
 import { useCMA, useSDK } from "@contentful/react-apps-toolkit";
 import { MemberInput, WebComponent, WebComponentMember } from "../../types";
 import { Entry } from 'contentful-management';
@@ -9,6 +9,7 @@ import { getContentfulRefClass } from "../../utils/isContentfulRef";
 import contentfulEntryStatus from "../../utils/contentfulEntryStatus";
 import loadContentfulRefs from "../../utils/loadContentfulRefs";
 import { Entry as EntryCPA } from 'contentful';
+import { PlusTrimmedIcon } from '@contentful/f36-icons';
 
 type ReferenceArrayInputProps = {
   member: WebComponentMember,
@@ -35,72 +36,38 @@ const ReferenceArrayInput = ({
 }: ReferenceArrayInputProps) => {
   const sdk = useSDK<EditorAppSDK>();
   const cma = useCMA();
+  const valuesArr = member.valueArr || [];
 
-
-  const renderEntry = (ref: Entry | undefined) => {
-    if (!ref) {
-      return (
-        <Text>Entry not found</Text>
-      );
-    }
-    return (
-      <FormControl marginBottom="spacing2Xs">
-          <FormControl.Label>{input.attribute}</FormControl.Label>
-          <EntryCard
-            contentType={ref.sys.contentType.sys.id}
-            title={ref.fields.title? ref.fields.title['en-US'] : ''}
-            size="small"
-            status={contentfulEntryStatus(ref)}
-            onClick={async () => {
-              await sdk.navigator.openEntry(
-                ref.sys.id, {
-                  slideIn: {
-                    waitForClose: true
-                  }
-                }
-              );
-              setIsSaving(true);
-              const cmaEntry = await cma.entry.get({
-                entryId: sdk.entry.getSys().id,
-              });
-              await loadContentfulRefs(
-                cmaEntry, sdk, cma,
-                setWebComponentCPARefs, setWebComponentRefs
-              );
-              setWebComponentEntry(cmaEntry);
-              setIsSaving(false);
-            }}
-            actions={[
-              <MenuItem key="copy" onClick={async () => {
-                const selection = await sdk.navigator.openNewEntry(
-                  ref.sys.contentType.sys.id, {
-                    slideIn: {
-                      waitForClose: true
-                    }
-                  }
-                );
-                if (!selection || !selection.entity) return;
-                member.value = selection.entity.sys.id;
-                const newWebComp = {...webComponent};
-                setWebComponent(newWebComp);
-                saveWebComponentConfig(
-                  cma, sdk,
-                  newWebComp,
-                  setIsSaving,
-                  setWebComponentEntry,
-                  setWebComponentRefs
-                );
-              }}>
-                Create New
-              </MenuItem>,
-              <MenuItem key="select" onClick={async () => {
+  return (
+    <FormControl marginBottom="spacing2Xs">
+      <Flex style={{width: '100%'}}
+        flexDirection="row"
+        alignItems="center">
+        <FormControl.Label
+          style={{flex: 1, marginBottom: 0}}>
+          {input.attribute}
+        </FormControl.Label>
+        <Menu>
+          <Menu.Trigger>
+            <IconButton
+              variant="transparent"
+              icon={<PlusTrimmedIcon variant="muted" />}
+              aria-label="toggle menu"
+            />
+          </Menu.Trigger>
+          <Menu.List>
+            <Menu.Item
+              onClick={async () => {
                 const selection = await sdk.dialogs.selectSingleEntry({
                   contentTypes:[
                     getContentfulRefClass(member)
                   ]
                 }) as Entry;
                 if (!selection) return;
-                member.value = selection.sys.id;
+                member.valueArr = member.valueArr ?
+                  [...member.valueArr, selection.sys.id] :
+                  [selection.sys.id];
+
                 const newWebComp = {...webComponent};
                 setWebComponent(newWebComp);
                 saveWebComponentConfig(
@@ -111,46 +78,29 @@ const ReferenceArrayInput = ({
                   setWebComponentRefs
                 );
               }}>
-                Change
-              </MenuItem>,
-              <MenuItem key="delete" onClick={() => {
-                delete member.value;
-                const newWebComp = {...webComponent};
-                setWebComponent(newWebComp);
-                saveWebComponentConfig(
-                  cma, sdk,
-                  newWebComp,
-                  setIsSaving,
-                  setWebComponentEntry,
-                  setWebComponentRefs
-                );
-              }}>
-                Remove
-              </MenuItem>,
-            ]}
-          />
-        </FormControl>
-    );
-  }
-
-  const valuesArr = member.valueArr || [];
-
-  return (
-    <FormControl marginBottom="spacing2Xs">
-      <FormControl.Label>{input.attribute}</FormControl.Label>
+              Add Entry
+            </Menu.Item>
+            <Menu.Item>
+              Create Entry
+            </Menu.Item>
+          </Menu.List>
+        </Menu>
+      </Flex>
       <EntityList>
         {valuesArr.map(val => {
-          const ref = webComponentRefs?.find((ref) => ref.sys.id === val);
+          const ref = webComponentRefs?.find((ref : any) => ref.sys.id === val);
           if (!ref) return (
             <Text 
               margin="spacingS">
               No component reference found for {val}
             </Text>
           );
+          const config = ref.fields.configuration ?
+            ref.fields.configuration['en-US'] : {};
           return (
             <EntityList.Item
               title={ref.fields.title? ref.fields.title['en-US'] : ''}
-              description={ref.sys.contentType.sys.id}
+              description={config ? config.tagName : ''}
               status={contentfulEntryStatus(ref)}
               withThumbnail={false}
               onClick={async () => {
@@ -174,8 +124,24 @@ const ReferenceArrayInput = ({
               }}
               actions={[
                 <MenuSectionTitle key="title">Actions</MenuSectionTitle>,
-                <MenuItem key="edit" onClick={() => {
-                  console.log('hola');
+                <MenuItem key="edit" onClick={async () => {
+                  await sdk.navigator.openEntry(
+                    ref.sys.id, {
+                      slideIn: {
+                        waitForClose: true
+                      }
+                    }
+                  );
+                  setIsSaving(true);
+                  const cmaEntry = await cma.entry.get({
+                    entryId: sdk.entry.getSys().id,
+                  });
+                  await loadContentfulRefs(
+                    cmaEntry, sdk, cma,
+                    setWebComponentCPARefs, setWebComponentRefs
+                  );
+                  setWebComponentEntry(cmaEntry);
+                  setIsSaving(false);
                 }}>Edit</MenuItem>,
                 <MenuItem key="download">Download</MenuItem>,
                 <MenuItem key="remove">Remove</MenuItem>,
@@ -184,7 +150,7 @@ const ReferenceArrayInput = ({
           );
         })}
       </EntityList>
-      <Button isFullWidth
+      {/* <Button isFullWidth
         onClick={async () => {
           const selection = await sdk.dialogs.selectSingleEntry({
             contentTypes:[
@@ -207,7 +173,7 @@ const ReferenceArrayInput = ({
           );
         }}>
         Add Entry
-      </Button>
+      </Button> */}
     </FormControl>
   );
 }

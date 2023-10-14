@@ -1,0 +1,180 @@
+{
+  "color": {
+    "primary": {
+      "$type": "color",
+      "$value": "{color.blue-500}"
+    },
+    "positive": {
+      "$type": "color",
+      "$value": "{color.green-500}"
+    },
+    "surface-text-disabled": {
+      "$type": "color",
+      "$value": "{color.gray-400}"
+    },
+    "surface-icon": {
+      "$type": "color",
+      "$value": "{color.gray-900}"
+    },
+    "surface": {
+      "$type": "color",
+      "$value": "{color.white}"
+    },
+    "surface-text": {
+      "$type": "color",
+      "$value": "{color.gray-900}"
+    },
+    "surface-text-light": {
+      "$type": "color",
+      "$value": "{color.gray-500}"
+    },
+    "surface-line": {
+      "$type": "color",
+      "$value": "{color.gray-300}"
+    },
+    "surface-line-light": {
+      "$type": "color",
+      "$value": "{color.gray-200}"
+    },
+    "surface-hover": {
+      "$type": "color",
+      "$value": "{color.blue-100}"
+    },
+    "surface-text-primary": {
+      "$type": "color",
+      "$value": "{color.primary}"
+    },
+    "focus": {
+      "$type": "color",
+      "$value": "{color.blue-300}"
+    },
+    "container": {
+      "$type": "color",
+      "$value": "{color.white}"
+    },
+    "padding-highlight": {
+      "$type": "color",
+      "$value": "{color.blue-300}"
+    }
+  },
+  "font": {
+    "displaySize": {
+      "$type": "number",
+      "$value": "{font.fontSize2Xl}"
+    },
+    "displayLineHeight": {
+      "$type": "number",
+      "$value": "{font.lineHeight2Xl}"
+    },
+    "displayWeight": {
+      "$type": "number",
+      "$value": "{font.weightBold}"
+    },
+    "displayLargeSize": {
+      "$type": "number",
+      "$value": "{font.fontSize3Xl}"
+    },
+    "displayLargeLineHeight": {
+      "$type": "number",
+      "$value": "{font.fontSize3Xl}"
+    },
+    "displayLargeWeight": {
+      "$type": "number",
+      "$value": "{font.weightBold}"
+    },
+    "headingSize": {
+      "$type": "number",
+      "$value": "{sizing.spacingXl}"
+    },
+    "headingLineHeight": {
+      "$type": "number",
+      "$value": "{sizing.spacingXl}"
+    },
+    "headingWeight": {
+      "$type": "number",
+      "$value": "{font.weightBold}"
+    },
+    "subheadingSize": {
+      "$type": "number",
+      "$value": "{font.fontSizeL}"
+    },
+    "subheadingLineHeight": {
+      "$type": "number",
+      "$value": "{font.lineHeightL}"
+    },
+    "subheadingWeight": {
+      "$type": "number",
+      "$value": "{font.weightBold}"
+    },
+    "bodySize": {
+      "$type": "number",
+      "$value": "{font.fontSizeM}"
+    },
+    "bodyLineHeight": {
+      "$type": "number",
+      "$value": "{font.lineHeightM}"
+    },
+    "bodyWeight": {
+      "$type": "number",
+      "$value": "{font.weightMedium}"
+    },
+    "sectionHeadingSize": {
+      "$type": "number",
+      "$value": "{font.fontSizeS}"
+    },
+    "sectionHeadingLineHeight": {
+      "$type": "number",
+      "$value": "{font.lineHeightS}"
+    },
+    "sectionHeadingWeight": {
+      "$type": "number",
+      "$value": "{font.weightDemiBold}"
+    },
+    "fontStackPrimary": {
+      "$type": "text",
+      "$value": "-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol"
+    },
+    "fontStackMonospace": {
+      "$type": "text",
+      "$value": "SFMono-Regular, Consolas, Liberation Mono, Menlo,monospace"
+    }
+  },
+  "z-index": {
+    "zIndexNegative": {
+      "$type": "number",
+      "$value": -1
+    },
+    "zIndexWorkbench": {
+      "$type": "number",
+      "$value": 0
+    },
+    "zIndexDefault": {
+      "$type": "number",
+      "$value": 1
+    },
+    "zIndexWorkbenchHeader": {
+      "$type": "number",
+      "$value": 10
+    },
+    "zIndexModal": {
+      "$type": "number",
+      "$value": 100
+    },
+    "zIndexModalContent": {
+      "$type": "number",
+      "$value": 101
+    },
+    "zIndexDropdown": {
+      "$type": "number",
+      "$value": 1000
+    },
+    "zIndexTooltip": {
+      "$type": "number",
+      "$value": 10000
+    },
+    "zIndexNotification": {
+      "$type": "number",
+      "$value": 100000
+    }
+  }
+}

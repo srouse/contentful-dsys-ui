@@ -1,0 +1,244 @@
+{
+  "color": {
+    "blue-100": {
+      "$type": "color",
+      "$value": "#e8f5ff"
+    },
+    "blue-200": {
+      "$type": "color",
+      "$value": "#ceecff"
+    },
+    "blue-300": {
+      "$type": "color",
+      "$value": "#98cbff"
+    },
+    "blue-400": {
+      "$type": "color",
+      "$value": "#40a0ff"
+    },
+    "blue-500": {
+      "$type": "color",
+      "$value": "#036fe3"
+    },
+    "blue-600": {
+      "$type": "color",
+      "$value": "#0059c8"
+    },
+    "blue-700": {
+      "$type": "color",
+      "$value": "#0041ab"
+    },
+    "blue-800": {
+      "$type": "color",
+      "$value": "#003298"
+    },
+    "blue-900": {
+      "$type": "color",
+      "$value": "#002a8e"
+    },
+    "white": {
+      "$type": "color",
+      "$value": "#ffffff"
+    },
+    "gray-100": {
+      "$type": "color",
+      "$value": "#f7f9fa"
+    },
+    "gray-200": {
+      "$type": "color",
+      "$value": "#e7ebee"
+    },
+    "gray-300": {
+      "$type": "color",
+      "$value": "#cfd9e0"
+    },
+    "gray-400": {
+      "$type": "color",
+      "$value": "#aec1cc"
+    },
+    "gray-500": {
+      "$type": "color",
+      "$value": "#67728a"
+    },
+    "gray-600": {
+      "$type": "color",
+      "$value": "#5a657c"
+    },
+    "gray-700": {
+      "$type": "color",
+      "$value": "#414d63"
+    },
+    "gray-800": {
+      "$type": "color",
+      "$value": "#1b273a"
+    },
+    "gray-900": {
+      "$type": "color",
+      "$value": "#111b2b"
+    },
+    "black": {
+      "$type": "color",
+      "$value": "#0c141c"
+    },
+    "green-100": {
+      "$type": "color",
+      "$value": "#eaf9e8"
+    },
+    "green-200": {
+      "$type": "color",
+      "$value": "#cdf3c6"
+    },
+    "green-300": {
+      "$type": "color",
+      "$value": "#9ed696"
+    },
+    "green-400": {
+      "$type": "color",
+      "$value": "#5db057"
+    },
+    "green-500": {
+      "$type": "color",
+      "$value": "#008539"
+    },
+    "green-600": {
+      "$type": "color",
+      "$value": "#006d23"
+    },
+    "green-700": {
+      "$type": "color",
+      "$value": "#00550c"
+    },
+    "green-800": {
+      "$type": "color",
+      "$value": "#004700"
+    },
+    "green-900": {
+      "$type": "color",
+      "$value": "#003f00"
+    }
+  },
+  "sizing": {
+    "spacing2Xs": {
+      "$type": "number",
+      "$value": 4
+    },
+    "spacingXs": {
+      "$type": "number",
+      "$value": 8
+    },
+    "spacingS": {
+      "$type": "number",
+      "$value": 12
+    },
+    "spacingM": {
+      "$type": "number",
+      "$value": 16
+    },
+    "spacingL": {
+      "$type": "number",
+      "$value": 24
+    },
+    "spacingXl": {
+      "$type": "number",
+      "$value": 32
+    },
+    "spacing2Xl": {
+      "$type": "number",
+      "$value": 48
+    },
+    "spacing3Xl": {
+      "$type": "number",
+      "$value": 64
+    },
+    "spacing4Xl": {
+      "$type": "number",
+      "$value": 80
+    }
+  },
+  "font": {
+    "weightNormal": {
+      "$type": "number",
+      "$value": 400
+    },
+    "weightMedium": {
+      "$type": "number",
+      "$value": 500
+    },
+    "weightDemiBold": {
+      "$type": "number",
+      "$value": 600
+    },
+    "lineHeightDefault": {
+      "$type": "number",
+      "$value": 1.5
+    },
+    "lineHeightCondensed": {
+      "$type": "number",
+      "$value": 1.25
+    },
+    "lineHeight4Xl": {
+      "$type": "number",
+      "$value": 3.5
+    },
+    "lineHeight3Xl": {
+      "$type": "number",
+      "$value": 3
+    },
+    "lineHeight2Xl": {
+      "$type": "number",
+      "$value": 2.25
+    },
+    "lineHeightXl": {
+      "$type": "number",
+      "$value": 2
+    },
+    "lineHeightL": {
+      "$type": "number",
+      "$value": 1.5
+    },
+    "lineHeightM": {
+      "$type": "number",
+      "$value": 1.2300000190734863
+    },
+    "lineHeightS": {
+      "$type": "number",
+      "$value": 1
+    },
+    "fontSizeS": {
+      "$type": "number",
+      "$value": 0.75
+    },
+    "fontSizeM": {
+      "$type": "number",
+      "$value": 0.875
+    },
+    "fontSizeL": {
+      "$type": "number",
+      "$value": 1
+    },
+    "fontSizeXl": {
+      "$type": "number",
+      "$value": 1.25
+    },
+    "fontSize2Xl": {
+      "$type": "number",
+      "$value": 1.75
+    },
+    "fontSize3Xl": {
+      "$type": "number",
+      "$value": 2.25
+    },
+    "fontSize4Xl": {
+      "$type": "number",
+      "$value": 3
+    },
+    "fontSizeDefault": {
+      "$type": "number",
+      "$value": 16
+    },
+    "weightBold": {
+      "$type": "number",
+      "$value": 700
+    }
+  }
+}

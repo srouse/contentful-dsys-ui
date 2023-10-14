@@ -1,0 +1,100 @@
+{
+  "toolbar property": {
+    "gap": {
+      "$type": "number",
+      "$value": "{sizing.spacingXs}"
+    },
+    "padding-vertical": {
+      "$type": "number",
+      "$value": "{sizing.spacing2Xs}"
+    }
+  },
+  "toolbar section": {
+    "icon-color": {
+      "$type": "color",
+      "$value": "{color.surface-text}"
+    },
+    "line-color": {
+      "$type": "color",
+      "$value": "{color.surface-line}"
+    },
+    "gap": {
+      "$type": "number",
+      "$value": "{sizing.spacing2Xs}"
+    },
+    "padding-height": {
+      "$type": "number",
+      "$value": "{sizing.spacingXs}"
+    }
+  },
+  "toolbar row": {
+    "icon-color": {
+      "$type": "color",
+      "$value": "{color.surface-icon}"
+    },
+    "row-hover": {
+      "$type": "color",
+      "$value": "{color.surface-hover}"
+    },
+    "gap": {
+      "$type": "number",
+      "$value": 0
+    },
+    "padding-height": {
+      "$type": "number",
+      "$value": "{sizing.spacing2Xs}"
+    }
+  },
+  "toolbar header": {
+    "padding-vertical": {
+      "$type": "number",
+      "$value": "{sizing.spacing2Xs}"
+    },
+    "gap": {
+      "$type": "number",
+      "$value": "{sizing.spacingXs}"
+    }
+  },
+  "toolbar input": {
+    "text-color": {
+      "$type": "color",
+      "$value": "{color.surface-text}"
+    },
+    "text-color-disabled": {
+      "$type": "color",
+      "$value": "{color.surface-text-disabled}"
+    },
+    "active-color": {
+      "$type": "color",
+      "$value": "{color.focus}"
+    },
+    "background-color": {
+      "$type": "color",
+      "$value": "{color.container}"
+    }
+  },
+  "toolbar label": {
+    "text-color": {
+      "$type": "color",
+      "$value": "{color.surface-text-light}"
+    },
+    "text-color-disabled": {
+      "$type": "color",
+      "$value": "{color.surface-text-disabled}"
+    }
+  },
+  "toolbar": {
+    "background-color": {
+      "$type": "color",
+      "$value": "{color.surface}"
+    },
+    "line-color": {
+      "$type": "color",
+      "$value": "{color.surface-line}"
+    },
+    "padding-width": {
+      "$type": "number",
+      "$value": "{sizing.spacingL}"
+    }
+  }
+}

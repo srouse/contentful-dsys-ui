@@ -3,14 +3,13 @@
 :host {
   display: inline-block;
   width: auto;
-  color: white;
-  font-family: sans-serif;
   
   slot {
     display: block;
+  }
 
-    > * {
-      width: 100%;
-    }
+  ::slotted(*) {
+    width: 100%;
+    box-sizing: border-box;
   }
 }
